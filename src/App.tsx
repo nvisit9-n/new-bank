@@ -47,6 +47,34 @@ function AdminRouteHandler() {
   return null;
 }
 
+function AccountingRouteHandler() {
+  const { openNoteReader } = useApp();
+
+  useEffect(() => {
+    const checkAccountingRoute = () => {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+
+      // Check path /accounting/2.x or hash #accounting/2.x or #/accounting/2.x
+      const match = path.match(/^\/accounting\/(2\.\d+)/) || hash.match(/#\/?accounting\/(2\.\d+)/);
+      if (match && match[1]) {
+        const sub = match[1];
+        openNoteReader(`note-accounting-${sub}`);
+      }
+    };
+
+    checkAccountingRoute();
+    window.addEventListener('popstate', checkAccountingRoute);
+    window.addEventListener('hashchange', checkAccountingRoute);
+    return () => {
+      window.removeEventListener('popstate', checkAccountingRoute);
+      window.removeEventListener('hashchange', checkAccountingRoute);
+    };
+  }, [openNoteReader]);
+
+  return null;
+}
+
 function MainApp() {
   const [showSplash, setShowSplash] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
@@ -71,6 +99,7 @@ function MainApp() {
         <SplashScreen onComplete={handleSplashComplete} durationMs={2000} />
       )}
       <AdminRouteHandler />
+      <AccountingRouteHandler />
       <Dashboard />
     </>
   );

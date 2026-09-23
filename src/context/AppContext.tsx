@@ -813,14 +813,46 @@ export const AppProvider: React.FC<{ children: React.ReactNode; initialUser?: Us
     let foundNote: StudyNote | null = null;
     if (typeof note === 'string') {
       const allNotes = StorageService.getAllNotes();
-      const found = allNotes.find(n => n.id === note || 
+      // Normalize note identifier (handle /accounting/2.1, 2.1, top-p1-b-01, etc.)
+      let searchKey = note.trim();
+      if (searchKey.startsWith('/accounting/')) {
+        searchKey = 'note-accounting-' + searchKey.replace('/accounting/', '');
+      } else if (searchKey.startsWith('accounting/')) {
+        searchKey = 'note-accounting-' + searchKey.replace('accounting/', '');
+      } else if (/^2\.\d+$/.test(searchKey)) {
+        searchKey = 'note-accounting-' + searchKey;
+      }
+
+      const found = allNotes.find(n => n.id === searchKey || n.id === note || 
         (note === 'top-01' && n.id === 'note-banking-history') ||
         (note === 'top-02' && n.id === 'note-banking-functions') ||
         (note === 'top-03' && n.id === 'note-deposit-credit') ||
         (note === 'top-04' && n.id === 'note-trade-finance-lc-bg') ||
         (note === 'top-05' && n.id === 'note-aml-kyc') ||
         (note === 'note-accounting-basics' && (n.id === 'note-accounting-2-1' || n.id === 'note-accounting-basics')) ||
-        (note === 'top-p1-b-01' && (n.id === 'note-accounting-2-1' || n.id === 'note-accounting-basics')));
+        (note === 'top-p1-b-01' && (n.id === 'note-accounting-2-1' || n.id === 'note-accounting-basics')) ||
+        (note === 'top-p1-b-02' && n.id === 'note-accounting-2-2') ||
+        (note === 'top-p1-b-03' && n.id === 'note-accounting-2-3') ||
+        (note === 'top-p1-b-04' && n.id === 'note-accounting-2-4') ||
+        (note === 'top-p1-b-05' && n.id === 'note-accounting-2-5') ||
+        (note === 'top-p1-b-06' && n.id === 'note-accounting-2-6') ||
+        (note === 'top-p1-b-07' && n.id === 'note-accounting-2-7') ||
+        (note === 'top-p1-b-08' && n.id === 'note-accounting-2-8') ||
+        (note === 'top-p1-b-09' && n.id === 'note-accounting-2-9') ||
+        (note === 'top-p1-b-10' && n.id === 'note-accounting-2-10') ||
+        (note === 'top-p1-b-11' && n.id === 'note-accounting-2-11') ||
+        (note === 'accounting-2-1' && (n.id === 'note-accounting-2-1' || n.id === 'note-accounting-basics')) ||
+        (note === 'accounting-2-2' && n.id === 'note-accounting-2-2') ||
+        (note === 'accounting-2-3' && n.id === 'note-accounting-2-3') ||
+        (note === 'accounting-2-4' && n.id === 'note-accounting-2-4') ||
+        (note === 'accounting-2-5' && n.id === 'note-accounting-2-5') ||
+        (note === 'accounting-2-6' && n.id === 'note-accounting-2-6') ||
+        (note === 'accounting-2-7' && n.id === 'note-accounting-2-7') ||
+        (note === 'accounting-2-8' && n.id === 'note-accounting-2-8') ||
+        (note === 'accounting-2-9' && n.id === 'note-accounting-2-9') ||
+        (note === 'accounting-2-10' && n.id === 'note-accounting-2-10') ||
+        (note === 'accounting-2-11' && n.id === 'note-accounting-2-11'));
+
       if (found) {
         foundNote = found;
         setActiveNote(found);
@@ -832,20 +864,40 @@ export const AppProvider: React.FC<{ children: React.ReactNode; initialUser?: Us
       setActiveReaderPage(1);
     }
 
-    if (foundNote && user && !user.isGuest) {
-      ActivityTrackingService.logActivity({
-        user,
-        activityType: 'reading',
-        targetId: foundNote.id,
-        targetTitle: foundNote.title,
-        details: `नोट अध्ययन: ${foundNote.title}`,
-        metadata: { category: foundNote.category, subject: foundNote.subject }
-      }).catch(() => {});
+    if (foundNote) {
+      if (typeof window !== 'undefined') {
+        try {
+          if (foundNote.id.startsWith('note-accounting-2-')) {
+            const topicNum = foundNote.id.replace('note-accounting-', '');
+            if (window.location.pathname !== `/accounting/${topicNum}`) {
+              window.history.pushState({ noteId: foundNote.id }, '', `/accounting/${topicNum}`);
+            }
+          }
+        } catch {}
+      }
+
+      if (user && !user.isGuest) {
+        ActivityTrackingService.logActivity({
+          user,
+          activityType: 'reading',
+          targetId: foundNote.id,
+          targetTitle: foundNote.title,
+          details: `नोट अध्ययन: ${foundNote.title}`,
+          metadata: { category: foundNote.category, subject: foundNote.subject }
+        }).catch(() => {});
+      }
     }
   };
 
   const closeNoteReader = () => {
     setActiveNote(null);
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.location.pathname.startsWith('/accounting/')) {
+          window.history.pushState(null, '', '/');
+        }
+      } catch {}
+    }
   };
 
   const openPremiumDetail = (note: PremiumNote | string) => {

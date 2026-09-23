@@ -292,7 +292,8 @@ export const TARGET_EXAMS_DATA: Record<string, TargetExam> = {
         timeLimitNe: '१८० मिनेट (३ घण्टा) प्रति पत्र',
         descriptionNe: 'पूर्वयोग्यता उत्तीर्ण उम्मेदवारहरूका लागि लिइने गहन विषयगत लिखित परीक्षा।',
         sectionsNe: [
-          'द्वितीय पत्र: बैंकिङ, लेखा, व्यवस्थापन तथा ऐन नियम (Paper II)',
+          'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+          'खण्ड (क): बैंकिङ तथा सुपरिवेक्षण (Banking & Supervision - 40 Marks)',
           'तृतीय पत्र: समष्टिगत अर्थशास्त्र, वित्तीय प्रणाली र IT (Paper III)'
         ],
         topics: [
@@ -300,18 +301,370 @@ export const TARGET_EXAMS_DATA: Record<string, TargetExam> = {
             id: 'nrb-w-supervision',
             titleNe: 'केन्द्रीय बैंकको स्वायत्तता र जोखिममा आधारित सुपरिवेक्षण (RBS)',
             titleEn: 'Central Bank Autonomy & Risk-Based Supervision Framework',
-            sectionNe: 'द्वितीय पत्र: बैंकिङ, लेखा, व्यवस्थापन तथा ऐन नियम (Paper II)',
+            sectionNe: 'खण्ड (क): बैंकिङ तथा सुपरिवेक्षण (Banking & Supervision - 40 Marks)',
             category: 'Banking',
             weightageMarks: 20,
             readTimeMin: 20,
             keyProvisionsNe: [
               'स्वायत्तताका ४ आयामहरू: संस्थागत स्वायत्तता, नीतिगत स्वायत्तता, वित्तीय स्वायत्तता र व्यक्तिगत स्वायत्तता',
-              'CAMELS सुपरिवेक्षण ढाँचा'
+              'CAMELS सुपरिवेक्षण ढाँचा (Capital, Assets, Management, Earnings, Liquidity, Sensitivity)'
             ],
             bulletPointsNe: ['RBS ले जोखिमको सम्भाव्यताका आधारमा सुपरिवेक्षण गर्दछ।'],
             lessonSummaryNe: 'केन्द्रीय बैंकको स्वायत्तता प्रभावकारी मौद्रिक नीति निर्माणका लागि मेरुदण्ड हो।',
             examTipsNe: ['CAMELS को प्रत्येक अक्षरको विश्लेषण तयार पार्नुहोस्।'],
             practiceMcqs: []
+          },
+          {
+            id: 'accounting-2-1',
+            titleNe: '२.१ बहिखाता तथा लेखा सम्बन्धी अवधारणा (Bookkeeping & Accounting Concepts)',
+            titleEn: 'Topic 2.1: Double Entry System, Accounting Cycle & Principles',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: '\\text{Assets} = \\text{Liabilities} + \\text{Owner\'s Equity} + (\\text{Revenue} - \\text{Expenses})',
+            latexCaption: 'आधारभूत लेखा समीकरण (Fundamental Accounting Equation)',
+            keyProvisionsNe: [
+              'दोहोरो लेखा प्रणालीका सिद्धान्तहरू (Dual Aspect Concept): प्रत्येक आर्थिक कारोबारले कम्तीमा दुई खातालाई बराबर र विपरीत प्रभाव पार्दछ',
+              'BAFIA २०७३ दफा ५९: बैंक तथा वित्तीय संस्थाले नियमित तथा वास्तविक कारोबार देखिने गरी लेखा राख्नुपर्ने',
+              'कम्पनी ऐन २०६३ दफा १०९: दोहोरो लेखा प्रणाली बमोजिम अनिवार्य हिसाबकिताब अभिलेख'
+            ],
+            bulletPointsNe: [
+              'बहिखाता वित्तीय कारोबारहरूको प्रारम्भिक अभिलेख राख्ने कला तथा विज्ञान हो।',
+              'लेखा चक्र: कारोबार पहिचान -> गोश्वारा भौचर -> खाता (Ledger) -> सन्तुलन परीक्षण -> अन्तिम हिसाब।'
+            ],
+            lessonSummaryNe: 'दोहोरो लेखा प्रणाली वैज्ञानिक, भरपर्दो र अन्तर्राष्ट्रिय रूपमा सर्वस्वीकार्य लेखा प्रणाली हो।',
+            examTipsNe: ['बहिखाता र लेखा प्रणाली बीचको ५ फरक र लेखा चक्रका ७ चरणहरू परीक्षामा प्रायः सोधिने प्रश्न हुन्।'],
+            noteReaderId: 'note-accounting-2-1',
+            practiceMcqs: [
+              {
+                id: 'acc-2-1-mcq',
+                questionNe: 'आधुनिक दोहोरो लेखा प्रणालीका प्रतिपादक लुका प्यासिओली (Luca Pacioli) ले कुन वर्ष आफ्नो प्रसिद्ध पुस्तक प्रकाशित गरेका थिए?',
+                optionsNe: ['सन् १४९४', 'सन् १७७६', 'सन् १९०४', 'सन् १९३४'],
+                correctIndex: 0,
+                explanationNe: 'सन् १४९४ मा इटालियन गणितज्ञ लुका प्यासिओलीले "Summa de Arithmetica, Geometria, Proportioni et Proportionalita" प्रकाशित गरेका थिए।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-2',
+            titleNe: '२.२ गोश्वारा भौचर, बैंक नगदी किताब (Journal Voucher & Bank Cash Book)',
+            titleEn: 'Topic 2.2: Journal Entries, General Ledger & Bank Cash Book',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: '\\sum \\text{Debits} = \\sum \\text{Credits}',
+            latexCaption: 'गोश्वारा भौचर सन्तुलन नियम (Journal Balance Condition)',
+            keyProvisionsNe: [
+              'गोश्वारा भौचर (Journal Voucher): कारोबारको मिति, डेबिट र क्रेडिट हुने खाता र संक्षिप्त विवरण (Narration) सहितको प्राथमिक अभिलेख',
+              'बैंक नगदी किताब (Bank Cash Book - महालेखा नियन्त्रक कार्यालय फाराम नं. २०३): नगद तथा बैंक कारोबारको एकीकृत अभिलेख',
+              'Golden Rules of Accounting: व्यक्तिगत (Personal), वास्तविक (Real) र नाममात्र (Nominal) खाताका नियमहरू'
+            ],
+            bulletPointsNe: [
+              'गोश्वारा भौचर बिना कुनै पनि खाता (Ledger) मा प्रविष्टि (Posting) गर्न सकिँदैन।',
+              'बैंक नगदी किताबमा नगद, बैंक, बजेट खर्च, पेस्की र विविध गरी ५ मुख्य महलहरू हुन्छन्।'
+            ],
+            lessonSummaryNe: 'गोश्वारा भौचर आर्थिक कारोबारको प्रमाणिक स्रोत अभिलेख हो भने बैंक नगदी किताब नगद तथा बजेट नियन्त्रणको प्रमुख औजार हो।',
+            examTipsNe: ['गोश्वारा भौचरको ढाँचा, Narration को महत्त्व र बैंक नगदी किताबका महलहरूको वर्गीकरण परीक्षाको मुख्य आकर्षण हो।'],
+            noteReaderId: 'note-accounting-2-2',
+            practiceMcqs: [
+              {
+                id: 'acc-2-2-mcq',
+                questionNe: 'नेपालको सरकारी लेखा प्रणालीमा बैंक नगदी किताब कुन फाराम नम्बर अन्तर्गत पर्दछ?',
+                optionsNe: ['म.ले.प. फाराम नं. २०१', 'म.ले.प. फाराम नं. २०३', 'म.ले.प. फाराम नं. २०८', 'म.ले.प. फाराम नं. २१०'],
+                correctIndex: 1,
+                explanationNe: 'नेपाल सरकारको वर्तमान लेखा प्रणालीमा बैंक नगदी किताब म.ले.नि.का./म.ले.प. फाराम नं. २०३ हो।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-3',
+            titleNe: '२.३ सन्तुलन परीक्षण (Trial Balance: Concept, Preparation & Error Rectification)',
+            titleEn: 'Topic 2.3: Trial Balance Preparation & Detection of Accounting Errors',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: '\\sum \\text{Debit Balances} = \\sum \\text{Credit Balances} + \\Delta \\text{Suspense}',
+            latexCaption: 'सन्तुलन परीक्षण समता (Trial Balance Equilibrium Equation)',
+            keyProvisionsNe: [
+              'सन्तुलन परीक्षण: लेजर खाताहरूको डेबिट तथा क्रेडिट शेषहरू राखी गणितीय शुद्धता जाँच गर्न तयार पारिने सूचीपत्र',
+              'सन्तुलन परीक्षणले नदेखाउने त्रुटिहरू (Errors not disclosed): छुट भूल (Omission), सैद्धान्तिक भूल (Principle), क्षतिपूर्ति भूल (Compensating)',
+              'उलझन् खाता (Suspense Account): सन्तुलन परीक्षण नमिलेमा अस्थायी रूपमा फरक रकम राखी खडा गरिने खाता'
+            ],
+            bulletPointsNe: [
+              'सन्तुलन परीक्षण खाता (Account) होइन, यो एउटा विवरण (Statement) मात्र हो।',
+              'सन्तुलन परीक्षण मिल्दैमा लेखा १००% त्रुटिरहित छ भन्न सकिँदैन।'
+            ],
+            lessonSummaryNe: 'सन्तुलन परीक्षण अन्तिम हिसाब तयार गर्नुपूर्व खाताहरूको गणितीय शुद्धता जाँच गर्ने अनिवार्य कडी हो।',
+            examTipsNe: ['सन्तुलन परीक्षणले देखाउने र नदेखाउने त्रुटिहरूको वर्गीकरण ५ अंकमा बारम्बार सोधिने प्रश्न हो।'],
+            noteReaderId: 'note-accounting-2-3',
+            practiceMcqs: [
+              {
+                id: 'acc-2-3-mcq',
+                questionNe: 'तलका मध्ये कुन त्रुटिले सन्तुलन परीक्षणको डेबिट र क्रेडिट सन्तुलनलाई असर गर्दैन?',
+                optionsNe: ['एकाउन्टमा गलत रकम पोस्टिङ', 'सैद्धान्तिक भूल (Error of Principle)', 'डेबिट महलको गलत जोड', 'लेजर ब्यालेन्स सन्तुलन परीक्षणमा सार्न छुट्नु'],
+                correctIndex: 1,
+                explanationNe: 'सैद्धान्तिक भूल (जस्तै पूँजीगत खर्चलाई आयगत खर्च मान्नु) मा डेबिट र क्रेडिट दुवै समान हुने हुँदा सन्तुलन परीक्षणमा फरक देखिँदैन।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-4',
+            titleNe: '२.४ हिसाब मिलान विवरण (Reconciliation Statements: BRS & Inter-Branch)',
+            titleEn: 'Topic 2.4: Bank Reconciliation Statement (BRS) & Inter-Branch Reconciliation (IBR)',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: '\\text{Balance as per Bank Statement} = \\text{Balance as per Cash Book} + \\text{Unpresented Cheques} - \\text{Uncredited Deposits} \\pm \\text{Direct Transactions/Errors}',
+            latexCaption: 'बैंक हिसाब मिलान आधारभूत सूत्र (BRS Core Equation)',
+            keyProvisionsNe: [
+              'BRS: नगद किताब (Cash Book) को बैंक महल र बैंक स्टेटमेन्ट (Pass Book) बीचको मौज्दातमा देखिने भिन्नता पत्ता लगाई मिलान गर्न तयार पारिने विवरण',
+              'अन्तर-शाखा हिसाब मिलान (IBR): बैंकका शाखाहरू बीच रकम स्थानान्तरण, क्लियरिङ तथा ड्राफ्ट कारोबार मिलान गर्ने प्रक्रिया',
+              'NRB निर्देशन: बैंकहरूले प्रत्येक महिना नियमित रूपमा अन्तरशाखा तथा नोस्ट्रो/भोस्ट्रो हिसाब मिलान गर्नुपर्ने बाध्यात्मक व्यवस्था'
+            ],
+            bulletPointsNe: [
+              'भिन्नताका प्रमुख कारण: समयको अन्तराल (Timing Differences) र प्रविष्टिमा त्रुटिहरू (Recording Errors)।',
+              'BRS ले बैंकिङ ठगी, चेक अनधिकृत निष्कासन र नगद विचलन रोक्न आन्तरिक नियन्त्रण प्रदान गर्दछ।'
+            ],
+            lessonSummaryNe: 'BRS ग्राहक तथा बैंक बीचको पारदर्शिताको औजार हो भने IBR बैंकका आन्तरिक शाखाहरू बीचको वित्तीय शुद्धताको मेरुदण्ड हो।',
+            examTipsNe: ['BRS निर्माणका ४ विन्दुहरू (सकारात्मक/ओभरड्राफ्ट मौज्दात) र IBR नहुँदा सिर्जना हुने वित्तीय जोखिम परीक्षामा अनिवार्य आउँछ।'],
+            noteReaderId: 'note-accounting-2-4',
+            practiceMcqs: [
+              {
+                id: 'acc-2-4-mcq',
+                questionNe: 'बैंकले ग्राहकको खातामा सिधै ब्याज जम्मा (Direct Credit) गरिदिएको तर क्यासबुकमा प्रविष्टि नभएको अवस्थामा BRS बनाउँदा क्यासबुक ब्यालेन्समा के गरिन्छ?',
+                optionsNe: ['घटाइन्छ (Deducted)', 'जोडिन्छ (Added)', 'उलझन् खातामा राखिन्छ', 'कुनै असर पर्दैन'],
+                correctIndex: 1,
+                explanationNe: 'बैंक स्टेटमेन्ट बढेको हुनाले क्यासबुकको सुरुवाती मौज्दातबाट बैंक स्टेटमेन्टमा पुग्न उक्त ब्याज रकम जोड्नुपर्दछ।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-5',
+            titleNe: '२.५ नाफा नोक्सान हिसाब र वासलात (Profit & Loss Account & Balance Sheet)',
+            titleEn: 'Topic 2.5: Financial Statements, P&L Account, Balance Sheet & Cash Flow Statement',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 10,
+            readTimeMin: 20,
+            latexFormula: '\\text{Net Profit} = \\text{Operating Profit} + \\text{Non-Operating Income} - \\text{Provisions} - \\text{Taxes (30\\% for BFIs)}',
+            latexCaption: 'खुद नाफा गणना सूत्र (Net Profit Equation for Commercial Banks)',
+            keyProvisionsNe: [
+              'नाफा नोक्सान हिसाब (P&L Account): निश्चित आर्थिक अवधिभित्र संस्थाले आर्जन गरेको नाफा वा व्यहोरेको नोक्सानी पत्ता लगाउने विवरण',
+              'वासलात (Balance Sheet): निश्चित मितिमा संस्थाको वित्तीय स्थिति (सम्पत्ति, दायित्व र शेयरधनी कोष) दर्शाउने वित्तीय ऐना',
+              'NFRS / NAS ढाँचा: Statement of Financial Position, Statement of Profit or Loss and Other Comprehensive Income (OCI)'
+            ],
+            bulletPointsNe: [
+              'वाणिज्य बैंकहरूका लागि आयकर ऐन २०५८ अनुसार संस्थागत कर दर ३०% लागू हुन्छ।',
+              'नाफा नोक्सान हिसाबले कार्यसम्पादन (Performance) र वासलातले वित्तीय स्वास्थ्य (Position) मापन गर्दछ।'
+            ],
+            lessonSummaryNe: 'अन्तिम हिसाब संस्थाको समग्र आम्दानी, खर्च, सम्पत्ति र दायित्वको आधिकारिक अभिलेख हो।',
+            examTipsNe: ['नाफा नोक्सान हिसाब र वासलात बीचको १० भिन्नता र वासलात किन खाता नभई विवरण हो भन्ने प्रश्न १० अंकमा सोधिन्छ।'],
+            noteReaderId: 'note-accounting-2-5',
+            practiceMcqs: [
+              {
+                id: 'acc-2-5-mcq',
+                questionNe: 'आयकर ऐन, २०५८ बमोजिम नेपालका क वर्गका वाणिज्य बैंकहरूमा लाग्ने संस्थागत आयकर (Corporate Tax) को दर कति प्रतिशत छ?',
+                optionsNe: ['२० प्रतिशत', '२५ प्रतिशत', '३० प्रतिशत', '३५ प्रतिशत'],
+                correctIndex: 2,
+                explanationNe: 'नेपालमा बैंक तथा वित्तीय संस्था र बीमा कम्पनीहरूमा ३०% संस्थागत कर लाग्दछ।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-6',
+            titleNe: '२.६ वित्तीय अनुपात (Financial Ratio Analysis: Liquidity, Profitability & Solvency)',
+            titleEn: 'Topic 2.6: Financial Ratios, Liquidity, Profitability, Solvency & DuPont Framework',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: '\\text{Current Ratio} = \\frac{\\text{Current Assets}}{\\text{Current Liabilities}}, \\quad \\text{ROE} = \\text{Net Profit Margin} \\times \\text{Asset Turnover} \\times \\text{Equity Multiplier}',
+            latexCaption: 'चालु अनुपात तथा डुपोन्ट विश्लेषण (Current Ratio & DuPont Identity)',
+            keyProvisionsNe: [
+              'तरलता अनुपात (Liquidity): चालु अनुपात (२:१ आदर्श) र शीघ्र अनुपात (१:१ आदर्श)',
+              'नाफा क्षमता अनुपात (Profitability): ROA (न्यूनतम १%), ROE (१५%+), Net Interest Margin (NIM)',
+              'बैंकिङ नियामक अनुपात: CD Ratio (अधिकतम ९०%), CAR (न्यूनतम ११%), CRR (४%), SLR (१२%)'
+            ],
+            bulletPointsNe: [
+              'डुपोन्ट फ्रेमवर्कले ROE लाई नाफा क्षमता, सम्पत्ति दक्षता र वित्तीय उत्तोलनमा विभाजन गर्दछ।',
+              'अनुपात विश्लेषणले बैंकको सबल र कमजोर पक्षको वस्तुनिष्ठ तुलना गर्न मद्दत गर्दछ।'
+            ],
+            lessonSummaryNe: 'अनुपात विश्लेषण वित्तीय विवरणहरूको सान्दर्भिक गणितीय सम्बन्ध मापन गर्ने आधुनिक विश्लेषण औजार हो।',
+            examTipsNe: ['बैंकिङ क्षेत्रमा प्रयोग हुने ५ नियामक अनुपातहरू (Regulatory Ratios) र तिनको सीमा अनिवार्य कण्ठ गर्नुहोस्।'],
+            noteReaderId: 'note-accounting-2-6',
+            practiceMcqs: [
+              {
+                id: 'acc-2-6-mcq',
+                questionNe: 'नेपाल राष्ट्र बैंकको निर्देशन अनुसार बैंक तथा वित्तीय संस्थाहरूले कायम गर्नुपर्ने कर्जा-निक्षेप अनुपात (CD Ratio) को अधिकतम सीमा कति हो?',
+                optionsNe: ['८० प्रतिशत', '८५ प्रतिशत', '९० प्रतिशत', '९५ प्रतिशत'],
+                correctIndex: 2,
+                explanationNe: 'नेपाल राष्ट्र बैंकले वाणिज्य बैंकहरूको कर्जा-निक्षेप अनुपात (Credit-Deposit Ratio) को माथिल्लो सीमा ९०% तोकेको छ।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-7',
+            titleNe: '२.७ आन्तरिक जाँच, आन्तरिक नियन्त्रण र आन्तरिक लेखापरीक्षण (Internal Control Systems)',
+            titleEn: 'Topic 2.7: Internal Check, Internal Control, Internal Audit & COSO Framework',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: '\\text{Audit Risk} = \\text{Inherent Risk (IR)} \\times \\text{Control Risk (CR)} \\times \\text{Detection Risk (DR)}',
+            latexCaption: 'लेखापरीक्षण जोखिम मोडेल (Audit Risk Model Equation)',
+            keyProvisionsNe: [
+              'आन्तरिक जाँच (Internal Check): कार्य विभाजन गरी एक कर्मचारीको कार्य अर्कोबाट स्वतः जाँच हुने व्यवस्था (Dual Control)',
+              'आन्तरिक नियन्त्रण (Internal Control - COSO): वित्तीय प्रतिवेदनको विश्वसनीयता र कानुन परिपालना सुनिश्चित गर्ने समग्र प्रणाली',
+              'आन्तरिक लेखापरीक्षण (Internal Audit): व्यवस्थापनलाई सल्लाह दिन संस्थाभित्रैबाट स्वतन्त्र रूपमा गरिने वस्तुनिष्ठ मूल्यांकन'
+            ],
+            bulletPointsNe: [
+              'BAFIA २०७३ दफा ६०: बैंकको सञ्चालक समिति अन्तर्गत ३ सदस्यीय लेखापरीक्षण समिति (Audit Committee) गठन हुनुपर्ने।',
+              'Maker-Checker प्रणालीले बैंकमा अनधिकृत लेनदेन र त्रुटिहरू नियन्त्रण गर्दछ।'
+            ],
+            lessonSummaryNe: 'आन्तरिक नियन्त्रण प्रणाली बैंकको जोखिम व्यवस्थापन तथा सुशासनको आधारशिला हो।',
+            examTipsNe: ['आन्तरिक जाँच, आन्तरिक नियन्त्रण र आन्तरिक लेखापरीक्षण बीचको तुलनात्मक तालिका ५ वा १० अंकमा सोधिने विशिष्ट प्रश्न हो।'],
+            noteReaderId: 'note-accounting-2-7',
+            practiceMcqs: [
+              {
+                id: 'acc-2-7-mcq',
+                questionNe: 'BAFIA २०७३ को दफा ६० बमोजिम बैंकको लेखापरीक्षण समितिको संयोजक को हुने व्यवस्था छ?',
+                optionsNe: ['बैंकको प्रमुख कार्यकारी अधिकृत (CEO)', 'गैर-कार्यकारी सञ्चालक (Non-Executive Director)', 'आन्तरिक लेखापरीक्षक प्रमुख', 'नेपाल राष्ट्र बैंकको प्रतिनिधि'],
+                correctIndex: 1,
+                explanationNe: 'लेखापरीक्षण समितिको संयोजक गैर-कार्यकारी सञ्चालक हुने र ३ सदस्यीय समिति गठन हुने कानुनी व्यवस्था छ।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-8',
+            titleNe: '२.८ ह्रास कट्टी: प्रकार तथा विधिहरू (Depreciation: Types & Methods)',
+            titleEn: 'Topic 2.8: Depreciation Accounting, SLM, WDV, Production Unit Method & Tax Pools',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: 'D_{\\text{SLM}} = \\frac{\\text{Cost} - \\text{Scrap Value}}{\\text{Useful Life}}, \\quad D_{\\text{WDV}} = \\text{Opening Book Value} \\times r',
+            latexCaption: 'सरल रेखा तथा घट्दो मौज्दात ह्रास कट्टी सूत्र (SLM & WDV Depreciation Formulas)',
+            keyProvisionsNe: [
+              'ह्रास कट्टी: स्थायी सम्पत्तिको निरन्तर प्रयोग, समय व्यतीत वा प्रविधिमा परिवर्तनका कारण मूल्यमा आउने स्थायी गिरावट',
+              'आयकर ऐन २०५८ अनुसूची २: सम्पत्तिलाई ५ वर्ग (क-५%, ख-२५%, ग-२०%, घ-१५%, ङ-सम्पत्तिको उपयोगी आयु अनुसार) मा विभाजन',
+              'NAS 16 (Property, Plant and Equipment): सम्पत्तिको ह्रास योग्य रकमलाई उपयोगी आयुभर व्यवस्थित रूपमा बाँडफाँड'
+            ],
+            bulletPointsNe: [
+              'जमिन (Land) मा ह्रास कट्टी हुँदैन किनभने यसको उपयोगी आयु असीमित हुन्छ।',
+              'ह्रास कट्टी नगद रहित खर्च (Non-Cash Expense) हो, जसले संस्थाको कर दायित्व घटाउँछ।'
+            ],
+            lessonSummaryNe: 'ह्रास कट्टीले सम्पत्तिको वास्तविक मूल्य प्रतिविम्बित गर्न र भविष्यमा सम्पत्ति प्रतिस्थापन गर्न कोष जोहो गर्न मद्दत गर्दछ।',
+            examTipsNe: ['SLM र WDV बीचका ५ भिन्नता र आयकर ऐन २०५८ को ५ वर्गको कर ह्रास दर कण्ठ गर्नुहोस्।'],
+            noteReaderId: 'note-accounting-2-8',
+            practiceMcqs: [
+              {
+                id: 'acc-2-8-mcq',
+                questionNe: 'आयकर ऐन, २०५८ को अनुसूची २ बमोजिम कम्प्युटर तथा डेटा प्रोसेसिङ उपकरण (वर्ग ख) मा कति प्रतिशत ह्रास कट्टी दर तोकिएको छ?',
+                optionsNe: ['५ प्रतिशत', '१५ प्रतिशत', '२० प्रतिशत', '२५ प्रतिशत'],
+                correctIndex: 3,
+                explanationNe: 'वर्ग (ख) अन्तर्गत कम्प्युटर, फर्निचर र सवारी साधनमा २५% घट्दो मौज्दात (WDV) आधारमा ह्रास कट्टी गरिन्छ।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-9',
+            titleNe: '२.९ सरकारी लेखा प्रणाली (Government Accounting System of Nepal)',
+            titleEn: 'Topic 2.9: New Accounting System 2019, TSA, CGAS, SuTRA & Financial Procedures Act',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: '\\text{Consolidated Fund} = \\text{Total Revenue} + \\text{Internal/External Loans} - \\text{Total Authorized Expenditures}',
+            latexCaption: 'सञ्चित कोष सन्तुलन समीकरण (Consolidated Fund Equilibrium Equation)',
+            keyProvisionsNe: [
+              'नयाँ श्रेस्ता प्रणाली: वि.सं. २०१८ चैत २ गते घोषणा भई २०१९ वैशाख १ देखि लागू गरिएको दोहोरो लेखामा आधारित प्रणाली',
+              'एकल खाता कोष प्रणाली (TSA): जिल्लास्थित कोष तथा लेखा नियन्त्रक कार्यालय (कोलेनिका) मार्फत सबै सरकारी कार्यालयहरूको एकल बैंक खाता सञ्चालन',
+              'डिजिटल सफ्टवेयरहरू: CGAS (केन्द्र), SuTRA (स्थानीय तह), LMBIS (बजेट विनियोजन), RMIS (राजस्व व्यवस्थापन)'
+            ],
+            bulletPointsNe: [
+              'नेपालको संविधान २०७२ धारा ११६: संघीय सञ्चित कोष सम्बन्धी व्यवस्था।',
+              'सरकारी लेखा प्रणाली नगद आधार (Cash Basis) मा आधारित छ, जसमा नाफा नोक्सान हिसाब बन्दैन।'
+            ],
+            lessonSummaryNe: 'सरकारी लेखा प्रणाली सार्वजनिक स्रोत साधनको उत्तरदायित्व, पारदर्शिता र बजेट नियन्त्रण सुनिश्चित गर्ने वैधानिक प्रणाली हो।',
+            examTipsNe: ['सरकारी लेखा र व्यावसायिक लेखा बीचका ७ भिन्नता र TSA प्रणालीका फाइदाहरू १० अंकमा सोधिने प्रश्न हुन्।'],
+            noteReaderId: 'note-accounting-2-9',
+            practiceMcqs: [
+              {
+                id: 'acc-2-9-mcq',
+                questionNe: 'नेपालमा हाल स्थानीय तहहरूमा बजेट निर्माण, लेखाङ्कन तथा वित्तीय प्रतिवेदन तयार गर्न कुन प्रणाली अनिवार्य गरिएको छ?',
+                optionsNe: ['LMBIS', 'SuTRA', 'CGAS', 'PLMBIS'],
+                correctIndex: 1,
+                explanationNe: 'स्थानीय तहहरूमा Sub-national Treasury Regulatory Application (SuTRA) सफ्टवेयर अनिवार्य रूपमा सञ्चालनमा छ।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-10',
+            titleNe: '२.१० लेखामान: नेपाल लेखामान, नेपाल वित्तीय प्रतिवेदनमान (NAS & NFRS)',
+            titleEn: 'Topic 2.10: Accounting Standards: NAS, NFRS, ASB Nepal & IFRS Convergence',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: '\\text{Expected Credit Loss (ECL)} = \\text{PD (Probability of Default)} \\times \\text{LGD (Loss Given Default)} \\times \\text{EAD (Exposure at Default)}',
+            latexCaption: 'NFRS 9 वित्तीय उपकरण अपेक्षित कर्जा नोक्सानी सूत्र (NFRS 9 ECL Equation)',
+            keyProvisionsNe: [
+              'नेपाल चार्टर्ड एकाउन्टेन्ट्स ऐन २०५३: नेपाल लेखामान बोर्ड (ASB) द्वारा लेखामान तर्जुमा तथा ICAN द्वारा लागू',
+              'NFRS (Nepal Financial Reporting Standards): IFRS सँग शतप्रतिशत मेल खाने गरी नेपालमा लागू गरिएको आधुनिक लेखामान',
+              'NFRS 9 (Financial Instruments): बैंकिङ क्षेत्रमा ऐतिहासिक नोक्सानीको सट्टा भविष्यलक्षी अपेक्षित कर्जा नोक्सानी (ECL Model) लागू'
+            ],
+            bulletPointsNe: [
+              'NFRS ले ऐतिहासिक लागत (Historical Cost) को सट्टा उचित मूल्य (Fair Value Accounting) लाई प्राथमिकता दिन्छ।',
+              'यसले वित्तीय विवरणको अन्तर्राष्ट्रिय तुलनात्मकता र पारदर्शिता अभिवृद्धि गर्दछ।'
+            ],
+            lessonSummaryNe: 'NFRS ले नेपाली बैंकिङ वित्तीय प्रतिवेदनलाई विश्वव्यापी मापदण्डमा स्तरोन्नति गरेको छ।',
+            examTipsNe: ['NFRS का फाइदाहरू र NFRS 9 अनुसार अपेक्षित कर्जा नोक्सानी (ECL Model) ले बैंकिङ क्षेत्रमा पारेको प्रभाव परीक्षामा सोधिन्छ।'],
+            noteReaderId: 'note-accounting-2-10',
+            practiceMcqs: [
+              {
+                id: 'acc-2-10-mcq',
+                questionNe: 'नेपालमा लेखामान (Accounting Standards) तर्जुमा गर्ने आधिकारिक वैधानिक निकाय कुन हो?',
+                optionsNe: ['नेपाल राष्ट्र बैंक', 'नेपाल धितोपत्र बोर्ड', 'नेपाल लेखामान बोर्ड (ASB Nepal)', 'महालेखा परीक्षकको कार्यालय'],
+                correctIndex: 2,
+                explanationNe: 'नेपाल चार्टर्ड एकाउन्टेन्ट्स ऐन २०५३ बमोजिम गठित नेपाल लेखामान बोर्ड (Accounting Standards Board - ASB) ले लेखामान तर्जुमा गर्दछ।'
+              }
+            ]
+          },
+          {
+            id: 'accounting-2-11',
+            titleNe: '२.११ मौज्दात व्यवस्थापन (Inventory & Stock Management: FIFO, LIFO & WAC)',
+            titleEn: 'Topic 2.11: Inventory Valuation, FIFO, LIFO, Weighted Average, EOQ & ABC Analysis',
+            sectionNe: 'खण्ड (ख): लेखा प्रणाली (Accounting & Auditing - 30 Marks)',
+            category: 'Accounting',
+            weightageMarks: 5,
+            readTimeMin: 15,
+            latexFormula: '\\text{EOQ} = \\sqrt{\\frac{2 \\times A \\times O}{C}}, \\quad \\text{Re-Order Level (ROL)} = \\text{Max Consumption} \\times \\text{Max Lead Time}',
+            latexCaption: 'आर्थिक आदेश परिमाण तथा पुनःआदेश विन्दु सूत्र (EOQ & ROL Formulas)',
+            keyProvisionsNe: [
+              'NAS 2 (Inventories): मौज्दातलाई लागत मूल्य (Cost Price) वा खुद बिक्रीयोग्य मूल्य (Net Realizable Value - NRV) मध्ये जुन कम छ सोही मूल्यमा मूल्यांकन (Cost or NRV whichever is lower)',
+              'मूल्यांकन विधिहरू: FIFO (पहिले आउने पहिले जाने), भारित औसत विधि (Weighted Average Cost - WAC); NAS 2 ले LIFO विधिलाई प्रतिबन्ध लगाएको छ',
+              'नियन्त्रण प्रविधिहरू: EOQ (न्यूनतम लागतमा खरिद), ABC विश्लेषण (मूल्य अनुसार नियन्त्रण), JIT (समयमै आपूर्ति)'
+            ],
+            bulletPointsNe: [
+              'बैंकहरूमा मुद्रण सामग्री, चेकबुक, कार्ड, सुरक्षात्मक उपकरण र जिन्सी सामानको व्यवस्थापनमा मौज्दात नियन्त्रण आवश्यक हुन्छ।',
+              'स्टक आउट (Stock-out) रोक्न सुरक्षा मौज्दात (Safety Stock) राखिन्छ।'
+            ],
+            lessonSummaryNe: 'प्रभावकारी मौज्दात व्यवस्थापनले भण्डारण लागत घटाउने, चुहावट रोक्ने र संस्थागत कार्यक्षमता बढाउने काम गर्छ।',
+            examTipsNe: ['FIFO र Weighted Average विधिको तुलना र EOQ को गणितीय सूत्र तथा महत्त्व ५ अंकमा प्रायः सोधिने प्रश्न हुन्।'],
+            noteReaderId: 'note-accounting-2-11',
+            practiceMcqs: [
+              {
+                id: 'acc-2-11-mcq',
+                questionNe: 'NAS 2 (Inventories) बमोजिम मौज्दातको अन्तिम मूल्यांकन कुन सिद्धान्तका आधारमा गरिन्छ?',
+                optionsNe: ['लागत मूल्यमा मात्र', 'बजार मूल्यमा मात्र', 'लागत वा खुद बिक्रीयोग्य मूल्य (NRV) मध्ये जुन कम छ सो मूल्यमा', 'पुनःस्थापना मूल्यमा'],
+                correctIndex: 2,
+                explanationNe: 'NAS 2 अनुसार inventories shall be measured at the lower of cost and net realizable value (NRV) हो।'
+              }
+            ]
           }
         ]
       },
