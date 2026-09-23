@@ -1,0 +1,458 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+:root {
+  color-scheme: light !important;
+  --font-sans: 'Mukta', 'Plus Jakarta Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mukta: 'Mukta', sans-serif;
+  --color-brand-navy: #0F172A;
+  --color-brand-sky: #0284C7;
+  --color-brand-slate: #F8FAFC;
+}
+
+html, body {
+  color-scheme: light !important;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-color: #F8FAFC !important;
+  font-family: 'Mukta', 'Plus Jakarta Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0F172A !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Deep Navy Blue Header and Clean Slate Layout Classes */
+.bg-navy-deep {
+  background-color: #0F172A !important;
+}
+
+.bg-slate-clean {
+  background-color: #F8FAFC !important;
+}
+
+.card-slate-clean {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
+}
+
+.dark .card-slate-clean {
+  background-color: #0F172A;
+  border: 1px solid #1E293B;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.shadow-soft-blue {
+  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.10), 0 8px 10px -6px rgba(37, 99, 235, 0.05);
+}
+
+/* Custom scrollbars for Clean Utility theme */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+.pulse-mic {
+  animation: pulseMic 1.5s infinite;
+}
+@keyframes pulseMic {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+/* Quiz Engine Animations */
+@keyframes quiz-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+@keyframes quiz-pop {
+  0% { transform: scale(0.92); opacity: 0; }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes quiz-slide-down {
+  0% { transform: translateY(-12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.animate-quiz-shake {
+  animation: quiz-shake 0.38s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.animate-quiz-pop {
+  animation: quiz-pop 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.animate-quiz-slide-down {
+  animation: quiz-slide-down 0.28s ease-out both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out both;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Mobile & PWA viewport safe area utilities */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 0px);
+}
+
+.pb-safe {
+  padding-bottom: max(0.625rem, env(safe-area-inset-bottom, 0.625rem));
+}
+
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 0px), 0px);
+}
+
+/* Glassmorphic Modern UI & 60fps Silk-Smooth Transitions */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 8px 32px 0 rgba(11, 32, 70, 0.05);
+}
+
+.dark .glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+}
+
+.glass-card-interactive {
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateZ(0);
+}
+
+.glass-card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px -4px rgba(11, 32, 70, 0.12);
+}
+
+.dark .glass-card-interactive:hover {
+  box-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.5);
+}
+
+.silk-transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 200ms;
+}
+
+/* ========================================================================= */
+/* CRITICAL MOBILE DASHBOARD & USER HERO CARD HIGH-CONTRAST DARK TEXT RULES   */
+/* Strictly overrides all invisible white text (#ffffff) on light surfaces   */
+/* ========================================================================= */
+/* ========================================================================= */
+/* CRITICAL MOBILE DASHBOARD & USER HERO CARD HIGH-CONTRAST DARK TEXT RULES   */
+/* Strictly overrides all invisible white text (#ffffff) on light surfaces   */
+/* ========================================================================= */
+.user-profile-hero,
+.user-hero-card,
+.dashboard-card-elevated,
+.card-elevated-white,
+.card-slate-clean {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+  color: #0F172A !important;
+  color-scheme: light !important;
+}
+
+/* Force all text elements on Web across dashboard cards, profile info, XP stats, sidebars */
+.dashboard-card-elevated h1,
+.dashboard-card-elevated h2,
+.dashboard-card-elevated h3,
+.dashboard-card-elevated h4,
+.dashboard-card-elevated h5,
+.dashboard-card-elevated h6,
+.user-profile-hero h1,
+.user-profile-hero h2,
+.user-profile-hero h3,
+.user-profile-hero h4,
+.user-profile-hero h5,
+.user-profile-hero h6,
+.user-profile-hero .hero-title,
+.user-hero-card h1,
+.user-hero-card h2,
+.user-hero-card h3,
+.user-hero-card h4,
+.user-hero-card h5,
+.user-hero-card h6 {
+  color: #0F172A !important;
+}
+
+.dashboard-card-elevated p,
+.dashboard-card-elevated span:not(.text-white):not([class*="bg-blue"]):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-amber-500"]),
+.user-profile-hero p,
+.user-profile-hero span:not(.text-white):not([class*="bg-blue"]):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-amber-500"]),
+.user-hero-card p,
+.user-hero-card span:not(.text-white):not([class*="bg-blue"]):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-amber-500"]) {
+  color: #0F172A !important;
+}
+
+.user-profile-hero .hero-dark-text,
+.user-profile-hero .hero-label,
+.user-profile-hero .hero-stat,
+.user-profile-hero .hero-user-name,
+.user-hero-card .hero-dark-text {
+  color: #0F172A !important;
+}
+
+.user-profile-hero .hero-subtext,
+.user-profile-hero .hero-stat-sub,
+.user-hero-card .hero-subtext {
+  color: #1E293B !important;
+}
+
+/* Secondary input pills behind email, phone, location, target exam, Unlock PRO */
+.user-profile-hero .hero-pill,
+.user-hero-card .hero-pill,
+.hero-pill {
+  background-color: #F1F5F9 !important;
+  border: 1px solid #CBD5E1 !important; /* border-slate-300 */
+  color: #0F172A !important;
+}
+
+.user-profile-hero .hero-pill *,
+.user-hero-card .hero-pill *,
+.hero-pill * {
+  color: #0F172A !important;
+}
+
+/* XP Card Inner Container with explicit borders & elevation */
+.user-profile-hero .hero-xp-card,
+.user-hero-card .hero-xp-card,
+.hero-xp-card {
+  background-color: #F8FAFC !important;
+  border: 1px solid #CBD5E1 !important; /* border-slate-300 */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04) !important;
+  color: #0F172A !important;
+}
+
+/* Force XP Card stats to be bold and dark slate #0F172A */
+.user-profile-hero .hero-xp-card .xp-title,
+.user-hero-card .hero-xp-card .xp-title,
+.user-profile-hero .hero-xp-card .xp-sub,
+.user-hero-card .hero-xp-card .xp-sub,
+.hero-xp-card span,
+.hero-xp-card p,
+.hero-xp-card div {
+  color: #0F172A !important;
+  font-weight: 700 !important;
+}
+
+/* Top Navbar Icons explicit dark slate render */
+.header-nav-icon,
+.nav-icon-dark {
+  color: #0F172A !important;
+  stroke: #0F172A !important;
+}
+
+/* Sidebar panel text high-contrast enforcement */
+.app-sidebar,
+.sidebar-panel {
+  color: #0F172A !important;
+}
+
+.app-sidebar p,
+.app-sidebar span:not(.text-white):not([class*="bg-blue"]):not([class*="bg-red"]),
+.sidebar-panel p,
+.sidebar-panel span:not(.text-white):not([class*="bg-blue"]):not([class*="bg-red"]) {
+  color: #0F172A !important;
+}
+
+/* Guarantee light background cards NEVER inherit white text */
+.bg-white,
+.bg-white:not(.dark-preserve) *:not(.text-white):not([class*="bg-blue"]):not([class*="bg-red"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-amber"]):not([class*="bg-indigo"]) {
+  /* Keep high contrast on light backgrounds */
+}
+
+/* Scoped dark mode only for elements genuinely styled for dark themes */
+.dark body:not(.theme-light-lock) {
+  background-color: #0B1120;
+}
+
+.dark .dark-surface {
+  background-color: #0F172A;
+  color: #FFFFFF;
+}
+
+.dark .dark-surface h1,
+.dark .dark-surface h2,
+.dark .dark-surface h3,
+.dark .dark-surface h4,
+.dark .dark-surface h5,
+.dark .dark-surface h6 {
+  color: #FFFFFF !important;
+}
+
+/* ========================================================================= */
+/* KaTeX Fraction Overlap, Vertical Line-Height & Positioning Bug Fixes      */
+/* ========================================================================= */
+.katex-display {
+  margin: 1.5rem 0 !important;
+  padding: 22px 24px !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  line-height: 2.2 !important;
+  text-align: center !important;
+}
+
+.katex-display > .katex {
+  display: inline-block !important;
+  white-space: normal !important;
+  text-align: center !important;
+  line-height: 2.2 !important;
+}
+
+.katex {
+  font-size: 1.15em !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* Fix KaTeX fraction vertical stack so horizontal bar strictly passes BETWEEN numerator and denominator */
+.katex .mfrac {
+  vertical-align: middle !important;
+  display: inline-block !important;
+  margin: 0.4em 0.45em !important;
+  line-height: 2.2 !important;
+}
+
+.katex .vlist-t {
+  display: inline-table !important;
+  vertical-align: middle !important;
+}
+
+.katex .vlist-r {
+  line-height: 2.2 !important;
+}
+
+/* Ensure horizontal fraction bar has solid stroke and clean spacing without touching top/bottom text */
+.katex .mfrac .frac-line {
+  border-bottom: 2px solid currentColor !important;
+  min-height: 2px !important;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+/* Ensure numerator has bottom margin/padding and denominator has top margin/padding */
+.katex .mfrac > span > span {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  line-height: 2.2 !important;
+}
+
+/* Extra vertical breathing room for text in numerators and denominators (eliminates all descender/ascender overlap) */
+.katex .mord.text,
+.katex .text {
+  font-family: 'Mukta', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+  letter-spacing: 0.015em !important;
+  vertical-align: middle !important;
+  padding: 0 2px !important;
+}
+
+/* General formula container with required min 20px vertical padding and 2.2 line-height */
+.katex-container,
+.katex-block {
+  padding: 22px 26px !important;
+  margin: 18px 0 !important;
+  line-height: 2.2 !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  border-radius: 14px;
+}
+
+/* Security & Anti-Copy Protection */
+.protected-notes-container {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Block Print Attempts completely via CSS */
+@media print {
+  body {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
+
+
+
+
+

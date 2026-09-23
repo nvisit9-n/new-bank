@@ -1,0 +1,57 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-09-23T07:18:36.604Z",
+  "totalTopics": 5,
+  "topics": [
+    {
+      "id": "financial-statement-ratio-analysis",
+      "topicNumber": 1,
+      "titleNe": "वित्तीय विवरण र यसको विश्लेषण",
+      "titleEn": "Financial Statement & Ratio Analysis",
+      "pdfFilename": "Banking_Notes_Topic_1_Financial_Statement_Ratio_Analysis.pdf",
+      "pdfUrl": "/notes-pdf/financial-statement-ratio-analysis.pdf",
+      "readTime": "१२ मिनेट",
+      "examWeightage": "१०-१५ अङ्क (नियमित परीक्षा प्रश्न)"
+    },
+    {
+      "id": "e-commerce-banking-nepal",
+      "topicNumber": 2,
+      "titleNe": "विद्युतीय वाणिज्य (E-Commerce)",
+      "titleEn": "Electronic Commerce (E-Commerce)",
+      "pdfFilename": "Banking_Notes_Topic_2_E_Commerce.pdf",
+      "pdfUrl": "/notes-pdf/e-commerce-banking-nepal.pdf",
+      "readTime": "१० मिनेट",
+      "examWeightage": "१० अङ्क (लिखित परीक्षा)"
+    },
+    {
+      "id": "electronic-payment-system-eps",
+      "topicNumber": 3,
+      "titleNe": "विद्युतीय भुक्तानी प्रणाली (EPS)",
+      "titleEn": "Electronic Payment System (EPS)",
+      "pdfFilename": "Banking_Notes_Topic_3_Electronic_Payment_System_EPS.pdf",
+      "pdfUrl": "/notes-pdf/electronic-payment-system-eps.pdf",
+      "readTime": "१२ मिनेट",
+      "examWeightage": "१०-१५ अङ्क (अत्यन्त महत्त्वपूर्ण)"
+    },
+    {
+      "id": "virtual-currency-and-cbdc",
+      "topicNumber": 4,
+      "titleNe": "भर्चुअल मुद्रा र CBDC",
+      "titleEn": "Virtual Currency & Central Bank Digital Currency (CBDC)",
+      "pdfFilename": "Banking_Notes_Topic_4_Virtual_Currency_CBDC.pdf",
+      "pdfUrl": "/notes-pdf/virtual-currency-and-cbdc.pdf",
+      "readTime": "११ मिनेट",
+      "examWeightage": "१० अङ्क (समसामयिक बैंकिङ प्रश्न)"
+    },
+    {
+      "id": "virtual-bank-neobank",
+      "topicNumber": 5,
+      "titleNe": "भर्चुअल बैंक (Virtual Bank / Neobank)",
+      "titleEn": "Virtual Bank / Neobank",
+      "pdfFilename": "Banking_Notes_Topic_5_Virtual_Bank_Neobank.pdf",
+      "pdfUrl": "/notes-pdf/virtual-bank-neobank.pdf",
+      "readTime": "१० मिनेट",
+      "examWeightage": "१० अङ्क (लिखित परीक्षा सम्भावित प्रश्न)"
+    }
+  ]
+}
