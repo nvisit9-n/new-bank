@@ -36,7 +36,7 @@ import { AdminModal } from '../modals/AdminModal';
 import { AdminPinModal } from '../modals/AdminPinModal';
 import { StudentProfileModal } from '../StudentProfileModal';
 import { LoginModal } from '../auth/LoginModal';
-import { MASTER_ADMIN_PIN } from '../../utils/sanitizer';
+import { MASTER_ADMIN_PIN, isUserAdmin, isOwnerAdmin } from '../../utils/sanitizer';
 import { PWAInstallPrompt } from '../pwa/PWAInstallPrompt';
 import { OfflineIndicator } from '../pwa/OfflineIndicator';
 import { TimedYouTubePopupModal } from '../modals/TimedYouTubePopupModal';
@@ -101,7 +101,7 @@ export const AppLayout: React.FC<AppLayoutProps> = () => {
           {activeTab === 'leaderboard' && <LeaderboardSection currentUser={user} />}
           {activeTab === 'deep-research' && <DeepResearchEngine />}
           {activeTab === 'about' && <AboutUsScreen />}
-          {activeTab === 'admin' && <AdminAnalyticsDashboard />}
+          {activeTab === 'admin' && isOwnerAdmin(user?.email) && <AdminAnalyticsDashboard />}
         </main>
 
         {/* Global Application Footer with Social Links */}
@@ -156,18 +156,20 @@ export const AppLayout: React.FC<AppLayoutProps> = () => {
       {/* Notifications Modal */}
       <NotificationsModal />
 
-      {/* Admin Architecture & Database Modal */}
-      <AdminModal />
+      {/* Admin Architecture & Database Modal - STRICTLY UNMOUNTED FOR ALL ACCOUNTS EXCEPT nvisit9@gmail.com */}
+      {isUserAdmin(user?.email) && <AdminModal />}
 
-      {/* Admin Master PIN Verification Modal (RBAC Gate) */}
-      <AdminPinModal
-        isOpen={isAdminPinModalOpen}
-        onClose={() => setIsAdminPinModalOpen(false)}
-        onSuccess={() => {
-          verifyAdminPin(MASTER_ADMIN_PIN);
-        }}
-        userEmail={user?.email}
-      />
+      {/* Admin Master PIN Verification Modal (RBAC Gate) - STRICTLY UNMOUNTED FOR ALL ACCOUNTS EXCEPT nvisit9@gmail.com */}
+      {isUserAdmin(user?.email) && (
+        <AdminPinModal
+          isOpen={isAdminPinModalOpen}
+          onClose={() => setIsAdminPinModalOpen(false)}
+          onSuccess={() => {
+            verifyAdminPin(MASTER_ADMIN_PIN);
+          }}
+          userEmail={user?.email}
+        />
+      )}
 
       {/* Gamified Profile Modal with Live Completion Bar and Google Lock */}
       {isProfileModalOpen && (

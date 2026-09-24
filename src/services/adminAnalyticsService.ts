@@ -9,8 +9,6 @@ import {
 } from 'firebase/firestore';
 import { ref, onValue } from 'firebase/database';
 import { db, rtdb } from '../firebase';
-import { DbService } from './dbService';
-import { ActivityTrackingService } from './activityTrackingService';
 import { AdminAnalyticsRecord } from '../types';
 
 export interface AdminRegisteredUser {
@@ -106,8 +104,10 @@ export class AdminAnalyticsService {
   }
 
   /**
-   * Real-time listener for registered and logged-in users from Firebase Firestore `registered_users`,
-   * Firestore `users`, Realtime Database, and the backend server database table.
+   * Real-time listener for registered and logged-in users directly from central DB:
+   * Firebase Firestore `registered_users`, Firestore `users`, Realtime Database `users`,
+   * and backend server table `/api/user-tracking/users`.
+   * Strictly queries central database - zero local storage fallbacks.
    */
   static subscribeToRegisteredUsers(
     onUpdate: (users: AdminRegisteredUser[]) => void
@@ -118,57 +118,11 @@ export class AdminAnalyticsService {
     let firestoreRegUsers: AdminRegisteredUser[] = [];
     let serverUsers: AdminRegisteredUser[] = [];
 
-    // Baseline from local real profile (no mock defaults)
-    const getLocalBaseline = (): AdminRegisteredUser[] => {
-      try {
-        const localStudents = DbService.getAllRegisteredStudents();
-        return localStudents
-          .filter(s => s && s.email && !s.id?.startsWith('usr-stud-'))
-          .map(s => ({
-            id: s.id || s.authUid || `user-${Date.now()}`,
-            authUid: s.authUid || s.id || '',
-            displayName: s.displayName || s.name || 'विद्यार्थी',
-            email: s.email || '',
-            registrationDate: s.registeredAt || new Date().toISOString(),
-            lastActive: s.lastActiveDate || s.registeredAt || new Date().toISOString(),
-            totalXp: s.xp || 150,
-            quizzesCompleted: s.quizzesCompleted || 0,
-            questionsSolved: s.questionsSolved || 0,
-            targetExam: s.targetExam || 'नेपाल राष्ट्र बैंक - सहायक ४',
-            district: s.district || 'काठमाडौँ',
-            province: s.province || 'बागमती प्रदेश',
-            photoURL: s.photoURL || s.avatarUrl || '',
-            isPro: Boolean(s.isPro || s.isProUser),
-            entryStatus: s.entryStatus || (s.isPro ? 'प्रो सक्रिय' : (s.email?.includes('@gmail.com') ? 'Google प्रमाणीकृत' : 'सक्रिय')),
-            pagesVisited: Array.isArray(s.pagesVisited) && s.pagesVisited.length ? s.pagesVisited : ['गृहपृष्ठ', '५० सेटहरू'],
-            lastPageVisited: s.lastPageVisited || 'सङ्गठित संस्था ५० सेटहरू',
-            isYouTubeSubscribed: s.isYouTubeSubscribed,
-            totalLogins: s.totalLogins || 1,
-            testsTaken: s.quizzesCompleted || 0,
-            device: 'Desktop',
-            browser: 'Browser'
-          }));
-      } catch (err) {
-        console.warn('Error reading local user baseline:', err);
-        return [];
-      }
-    };
-
-    const initialBaseline = getLocalBaseline();
-    if (initialBaseline.length > 0) {
-      onUpdate(initialBaseline);
-    }
-
     const emitMerged = () => {
       if (isUnsubscribed) return;
       const userMap = new Map<string, AdminRegisteredUser>();
 
-      // 1. Baseline
-      for (const u of initialBaseline) {
-        const key = (u.email ? u.email.toLowerCase() : u.id) || u.authUid;
-        if (key) userMap.set(key, u);
-      }
-      // 2. Server Users
+      // 1. Central Server DB Users
       for (const u of serverUsers) {
         const key = (u.email ? u.email.toLowerCase() : u.id) || u.authUid;
         if (key) {
@@ -176,7 +130,7 @@ export class AdminAnalyticsService {
           userMap.set(key, { ...prev, ...u });
         }
       }
-      // 3. Firestore registered_users (Highest authority)
+      // 2. Firestore registered_users (Central DB)
       for (const u of firestoreRegUsers) {
         const key = (u.email ? u.email.toLowerCase() : u.id) || u.authUid;
         if (key) {
@@ -184,7 +138,7 @@ export class AdminAnalyticsService {
           userMap.set(key, { ...prev, ...u });
         }
       }
-      // 4. Firestore users collection
+      // 3. Firestore users collection (Central DB)
       for (const u of firestoreUsers) {
         const key = (u.email ? u.email.toLowerCase() : u.id) || u.authUid;
         if (key) {
@@ -192,7 +146,7 @@ export class AdminAnalyticsService {
           userMap.set(key, { ...prev, ...u });
         }
       }
-      // 5. RTDB Users
+      // 4. RTDB Users (Central DB)
       for (const u of rtdbUsers) {
         const key = (u.email ? u.email.toLowerCase() : u.id) || u.authUid;
         if (key) {
@@ -208,7 +162,7 @@ export class AdminAnalyticsService {
       onUpdate(merged);
     };
 
-    // Fetch from Backend Server Table `/api/user-tracking/users`
+    // Fetch from Central Backend Server Table `/api/user-tracking/users`
     const fetchServerUsers = async () => {
       try {
         const res = await fetch('/api/user-tracking/users');
@@ -401,7 +355,10 @@ export class AdminAnalyticsService {
   }
 
   /**
-   * Real-time listener for Exam & Quiz Submissions across ALL users from RTDB & Firestore
+   * Real-time listener for Exam & Quiz Submissions across ALL users directly from Central Database:
+   * Firebase RTDB (`global_exam_results`, `exam_submissions`, `users` nested results),
+   * Firestore (`global_exam_results`, `exam_submissions`), and server DB endpoints (`/api/tracking/exam-submissions`).
+   * Strictly queries central database - zero local storage fallbacks.
    */
   static subscribeToExamSubmissions(
     onUpdate: (exams: AdminExamRecord[]) => void
@@ -415,90 +372,11 @@ export class AdminAnalyticsService {
     let firestoreSubmissions: AdminExamRecord[] = [];
     let serverExams: AdminExamRecord[] = [];
 
-    // Load local baseline exam submissions
-    const getLocalBaseline = (): AdminExamRecord[] => {
-      try {
-        const localSubs = ActivityTrackingService.getLocalExamSubmissions();
-        const localRecords = DbService.getAnalyticsRecords();
-
-        const list: AdminExamRecord[] = [];
-
-        for (const s of localSubs) {
-          const totalQ = s.totalQuestions || 25;
-          const score = typeof s.score === 'number' ? s.score : 0;
-          list.push({
-            id: s.id,
-            userId: s.userId,
-            studentName: s.userName || 'विद्यार्थी',
-            studentEmail: s.userEmail || '',
-            quizTitle: s.quizTitle || 'बैंकिङ सामान्य ज्ञान नमुना सेट',
-            quizId: s.quizId || '',
-            totalQuestions: totalQ,
-            attemptedCount: s.attemptedCount || totalQ,
-            correctAnswers: s.correctAnswers || 0,
-            incorrectAnswers: s.incorrectAnswers || 0,
-            skippedCount: s.skippedCount ?? Math.max(0, totalQ - ((s.correctAnswers || 0) + (s.incorrectAnswers || 0))),
-            negativeDeduction: s.negativeDeduction ?? 0,
-            score: Math.round(score * 100) / 100,
-            netScore: Math.round(score * 100) / 100,
-            percentage: s.accuracy || (totalQ > 0 ? Math.round((score / totalQ) * 100) : 0),
-            accuracy: s.accuracy || 0,
-            timeTakenSeconds: s.timeTakenSeconds || 300,
-            timeElapsedSeconds: s.timeTakenSeconds || 300,
-            timestamp: s.submittedAt || s.timestamp || new Date().toISOString(),
-            category: s.category || 'General Banking',
-            district: (s as any).district || 'काठमाडौँ',
-            targetExam: (s as any).targetExam || 'नेपाल राष्ट्र बैंक - सहायक ४'
-          });
-        }
-
-        for (const r of localRecords) {
-          if (!list.some(item => item.id === r.id)) {
-            list.push({
-              id: r.id,
-              userId: r.userId,
-              studentName: r.userName || 'विद्यार्थी',
-              studentEmail: r.userId && r.userId.includes('@') ? r.userId : '',
-              quizTitle: r.quizTitle || 'बैंकिङ नमुना परीक्षा',
-              quizId: r.quizId,
-              totalQuestions: r.totalQuestions || 25,
-              attemptedCount: r.attemptedCount || 25,
-              correctAnswers: r.correctAnswers || 0,
-              incorrectAnswers: r.incorrectAnswers || 0,
-              skippedCount: r.skippedCount,
-              negativeDeduction: r.negativeDeduction,
-              score: r.netScore || 0,
-              netScore: r.netScore || 0,
-              percentage: r.accuracy || 0,
-              accuracy: r.accuracy || 0,
-              timeTakenSeconds: r.timeElapsedSeconds || 300,
-              timeElapsedSeconds: r.timeElapsedSeconds || 300,
-              timestamp: r.timestamp || new Date().toISOString(),
-              category: r.category || 'Banking',
-              district: r.district || 'काठमाडौँ',
-              targetExam: r.targetExam || 'नेपाल राष्ट्र बैंक - सहायक ४'
-            });
-          }
-        }
-
-        return list;
-      } catch (err) {
-        console.warn('Error reading local exam baseline:', err);
-        return [];
-      }
-    };
-
-    const initialBaseline = getLocalBaseline();
-    if (initialBaseline.length > 0) {
-      onUpdate(initialBaseline);
-    }
-
     const emitMerged = () => {
       if (isUnsubscribed) return;
       const idMap = new Map<string, AdminExamRecord>();
 
-      // Merge order: baseline -> server -> firestore -> rtdb (rtdb freshest)
-      for (const ex of initialBaseline) idMap.set(ex.id, ex);
+      // Merge central sources: server -> firestore -> rtdb (rtdb freshest)
       for (const ex of serverExams) idMap.set(ex.id, ex);
       for (const ex of firestoreSubmissions) idMap.set(ex.id, ex);
       for (const ex of firestoreGlobalExams) idMap.set(ex.id, ex);
@@ -787,37 +665,6 @@ export class AdminAnalyticsService {
       return 250;
     };
 
-    // Baseline local activities
-    const getLocalBaseline = (): AdminNotesActivityRecord[] => {
-      try {
-        const localActs = ActivityTrackingService.getLocalActivities();
-        const records: AdminNotesActivityRecord[] = [];
-
-        for (const act of localActs) {
-          const noteTitle = act.metadata?.targetTitle || act.details || 'नेपाल राष्ट्र बैंक ऐन, २०५८ अध्ययन';
-          records.push({
-            id: act.id,
-            studentName: act.userName || 'विद्यार्थी',
-            studentEmail: act.userEmail || '',
-            noteTitle: noteTitle,
-            details: act.details,
-            timestamp: act.timestamp || new Date().toISOString(),
-            accumulatedXp: getStudentXp(act.userEmail, act.userName),
-            activityType: act.activityType
-          });
-        }
-
-        return records;
-      } catch {
-        return [];
-      }
-    };
-
-    const initialBaseline = getLocalBaseline();
-    if (initialBaseline.length > 0) {
-      onUpdate(initialBaseline);
-    }
-
     try {
       const actCol = collection(db, 'user_activities');
       const q = query(actCol, limit(150));
@@ -845,7 +692,7 @@ export class AdminAnalyticsService {
             });
           });
 
-          // Server-synced activities
+          // Server-synced activities from central DB
           fetch('/api/tracking/activities')
             .then(res => res.json())
             .then(data => {
@@ -869,9 +716,6 @@ export class AdminAnalyticsService {
             .catch(() => {})
             .finally(() => {
               const idMap = new Map<string, AdminNotesActivityRecord>();
-              for (const act of initialBaseline) {
-                idMap.set(act.id, act);
-              }
               for (const act of firestoreActs) {
                 idMap.set(act.id, act);
               }
@@ -885,7 +729,6 @@ export class AdminAnalyticsService {
         },
         (err) => {
           console.warn('Firestore user_activities notice:', err.message);
-          onUpdate(initialBaseline);
         }
       );
 
@@ -949,9 +792,9 @@ export class AdminAnalyticsService {
       totalActiveStudents,
       totalExamsCompleted,
       averageScorePercent,
-      totalNotesRead: Math.max(totalNotesRead, users.reduce((acc, u) => acc + (u.questionsSolved > 0 ? Math.ceil(u.questionsSolved / 5) : 1), 0)),
+      totalNotesRead,
       averageCompletionTimeSeconds,
-      topPerformingStudent: topStudentName || 'सुमन अधिकारी (1850 XP)'
+      topPerformingStudent: topStudentName || (users.length > 0 ? `${users[0].displayName} (${users[0].totalXp} XP)` : 'N/A')
     };
   }
 

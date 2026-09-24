@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ShieldCheck, Lock, X, AlertTriangle, KeyRound, CheckCircle2, ShieldAlert } from 'lucide-react';
-import { MASTER_ADMIN_PIN, OFFICIAL_ADMIN_EMAIL } from '../../utils/sanitizer';
+import { MASTER_ADMIN_PIN, OFFICIAL_ADMIN_EMAIL, isUserAdmin } from '../../utils/sanitizer';
 
 interface AdminPinModalProps {
   isOpen: boolean;
@@ -33,7 +33,7 @@ export const AdminPinModal: React.FC<AdminPinModalProps> = ({
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !isUserAdmin(userEmail)) return null;
 
   const handleChange = (index: number, value: string) => {
     setError(null);

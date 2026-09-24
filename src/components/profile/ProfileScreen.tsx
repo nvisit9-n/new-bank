@@ -520,7 +520,7 @@ export const ProfileScreen: React.FC = () => {
             </button>
           </div>
 
-          {/* Dedicated Hidden Admin Portal Link for Authorized Admin (rishiramthapa3@gmail.com) */}
+          {/* Dedicated Hidden Admin Portal Link for Authorized Admin (nvisit9@gmail.com) */}
           {isUserAdmin(user?.email) && (
             <div className="pt-3 mt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -528,7 +528,7 @@ export const ProfileScreen: React.FC = () => {
                   <ShieldCheck className="w-4 h-4 text-red-600 dark:text-red-400" />
                   <p className="font-bold text-red-600 dark:text-red-400 text-sm">अधिकृत प्रशासक प्यानल (Admin Portal)</p>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">प्रशासक कन्सोल तथा खरिद प्रमाणीकरण व्यवस्थापन</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">प्रशासक कन्सोल तथा खरिद प्रमाणीकरण व्यवस्थापन (nvisit9@gmail.com)</p>
               </div>
               <button
                 onClick={openAdminWithSecurityCheck}

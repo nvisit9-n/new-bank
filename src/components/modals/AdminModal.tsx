@@ -46,7 +46,7 @@ import { Question, StudyNote, UserProfile, SubjectCategory } from '../../types';
 import { VideoLecture } from '../../data/videoLectures';
 import { DbService, AdminAnalyticsSummary, SyncConfig, PaymentVerificationRequest } from '../../services/dbService';
 import { AnalyticsService, VisitorAnalyticsStats } from '../../services/analyticsService';
-import { OFFICIAL_ADMIN_EMAIL, isExcludedAdminActivity } from '../../utils/sanitizer';
+import { isUserAdmin, PRIMARY_OWNER_EMAIL, OFFICIAL_ADMIN_EMAIL, isExcludedAdminActivity } from '../../utils/sanitizer';
 import { 
   ActivityTrackingService, 
   ActivityLogRecord, 
@@ -60,7 +60,23 @@ export const AdminModal: React.FC = () => {
   const { isAdminModalOpen, setIsAdminModalOpen, logoutAdmin, purchases, addToast, user } = useApp();
   const [activeTab, setActiveTab] = useState<'analytics' | 'questions' | 'notes' | 'videos' | 'students' | 'cloudSync'>('analytics');
 
-  const [summary, setSummary] = useState<AdminAnalyticsSummary>(() => DbService.getAnalyticsSummary());
+  // Pure Central Database Analytics Summary (Zero local storage/session fallback)
+  const [summary, setSummary] = useState<AdminAnalyticsSummary>({
+    totalAttempts: 0,
+    totalStudents: 0,
+    averageNetScore: 0,
+    averageAccuracy: 0,
+    totalAttemptedQuestions: 0,
+    totalSkippedQuestions: 0,
+    attemptedToSkippedRatio: '0% / 0%',
+    totalCorrect: 0,
+    totalIncorrect: 0,
+    totalNegativeDeductions: 0,
+    averageTimeElapsedSeconds: 0,
+    districtDistribution: {},
+    examDistribution: {},
+    recentRecords: []
+  });
   const [syncConfig, setSyncConfig] = useState<SyncConfig>(() => DbService.getSyncConfig());
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [customEndpoint, setCustomEndpoint] = useState<string>(syncConfig.cloudEndpoint);
@@ -132,23 +148,96 @@ export const AdminModal: React.FC = () => {
     }
   };
 
-  // Reload data whenever modal opens
-  const reloadData = () => {
-    setSummary(DbService.getAnalyticsSummary());
+  // Reload data directly from central database whenever modal opens
+  const reloadData = async () => {
     setSyncConfig(DbService.getSyncConfig());
     setQuestions(DbService.getAllQuestions());
     setNotes(DbService.getAllStudyNotes());
     setVideos(DbService.getAllVideos());
-    setStudents(DbService.getAllRegisteredStudents());
     setPaymentVerifications(DbService.getPaymentVerifications());
     loadVisitorStats();
     loadTrackingRecords();
+
+    // Query Central Database directly on every load (Server DB table /api/user-tracking/users and /api/tracking/exam-submissions)
+    try {
+      const [usersRes, examsRes] = await Promise.all([
+        fetch('/api/user-tracking/users').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/tracking/exam-submissions').then(r => r.ok ? r.json() : null).catch(() => null)
+      ]);
+
+      if (usersRes?.users && Array.isArray(usersRes.users)) {
+        const mappedStudents: UserProfile[] = usersRes.users.map((u: any) => ({
+          id: u.id || u.authUid,
+          authUid: u.authUid || u.id,
+          email: u.email || '',
+          name: u.displayName || u.name || 'विद्यार्थी',
+          displayName: u.displayName || u.name || 'विद्यार्थी',
+          district: u.district || 'काठमाडौँ',
+          province: u.province || 'बागमती प्रदेश',
+          targetExam: u.targetExam || 'नेपाल राष्ट्र बैंक - सहायक ४',
+          avatarUrl: u.photoURL || u.avatarUrl || '',
+          photoURL: u.photoURL || u.avatarUrl || '',
+          registeredAt: u.registrationDate || u.registeredAt || new Date().toISOString(),
+          createdAt: u.registrationDate || u.registeredAt || new Date().toISOString(),
+          lastLoginAt: u.lastActive || u.lastLoginAt || new Date().toISOString(),
+          lastActiveDate: u.lastActive || u.lastActiveDate || new Date().toISOString(),
+          xp: u.totalXp || u.xp || 150,
+          level: Math.floor((u.totalXp || u.xp || 150) / 100) + 1,
+          quizzesAttempted: u.quizzesCompleted || u.quizzesAttempted || 0,
+          quizzesCompleted: u.quizzesCompleted || 0,
+          questionsSolved: u.questionsSolved || 0,
+          streak: u.streak || 1,
+          accuracy: u.accuracy || 75,
+          rank: u.rank || 'तह ४: नयाँ प्रतियोगी',
+          isPro: Boolean(u.isPro),
+          isProUser: Boolean(u.isPro),
+          entryStatus: u.entryStatus || (u.isPro ? 'प्रो सक्रिय' : 'सक्रिय')
+        }));
+        setStudents(mappedStudents);
+        setSummary(prev => ({
+          ...prev,
+          totalStudents: mappedStudents.length
+        }));
+      }
+
+      if (examsRes?.submissions && Array.isArray(examsRes.submissions)) {
+        const subs = examsRes.submissions;
+        const totalAttempts = subs.length;
+        let totalAccuracy = 0;
+        let totalScore = 0;
+        for (const e of subs) {
+          totalAccuracy += (e.accuracy ?? e.percentage ?? 0);
+          totalScore += (e.netScore ?? e.score ?? 0);
+        }
+        const avgAcc = totalAttempts > 0 ? Math.round(totalAccuracy / totalAttempts) : 0;
+        const avgScore = totalAttempts > 0 ? Math.round((totalScore / totalAttempts) * 100) / 100 : 0;
+        const analyticsRecords = subs.map(AdminAnalyticsService.mapExamRecordToAnalyticsRecord);
+
+        setSummary(prev => ({
+          ...prev,
+          totalAttempts,
+          averageAccuracy: avgAcc,
+          averageNetScore: avgScore,
+          recentRecords: analyticsRecords
+        }));
+      }
+    } catch (e) {
+      console.warn('Central DB direct load notice:', e);
+    }
   };
 
+  // Strict email authorization guard: instantly close modal for any unauthorized user
   useEffect(() => {
-    if (isAdminModalOpen) {
+    if (isAdminModalOpen && !isUserAdmin(user?.email)) {
+      setIsAdminModalOpen(false);
+      addToast('Unauthorized Access: Admin CMS केवल nvisit9@gmail.com का लागि मात्र सुरक्षित गरिएको छ।', 'error');
+    }
+  }, [isAdminModalOpen, user?.email, setIsAdminModalOpen, addToast]);
+
+  useEffect(() => {
+    if (isAdminModalOpen && isUserAdmin(user?.email)) {
       reloadData();
-      // Auto-poll visitor statistics every 10 seconds
+      // Auto-poll visitor statistics every 10 seconds directly from server DB
       const pollTimer = setInterval(loadVisitorStats, 10000);
 
       // Real-time listener for ALL registered users in Firebase (RTDB users/ node & Firestore)
@@ -192,7 +281,7 @@ export const AdminModal: React.FC = () => {
         }
       });
 
-      // Real-time listener for ALL exam submissions across ALL users (RTDB global_exam_results, exam_submissions, users/*/exam_results, Firestore, and server)
+      // Real-time listener for ALL exam submissions across ALL users directly from Central Database
       const unsubExams = AdminAnalyticsService.subscribeToExamSubmissions((liveExams) => {
         if (liveExams) {
           const totalAttempts = liveExams.length;
@@ -222,9 +311,9 @@ export const AdminModal: React.FC = () => {
         if (typeof unsubExams === 'function') unsubExams();
       };
     }
-  }, [isAdminModalOpen]);
+  }, [isAdminModalOpen, user?.email]);
 
-  if (!isAdminModalOpen) return null;
+  if (!isAdminModalOpen || !isUserAdmin(user?.email)) return null;
 
   const totalRevenue = (purchases || []).reduce((acc, p) => acc + (p.amountPaid || p.price || 0), 0);
 
@@ -629,7 +718,7 @@ export const AdminModal: React.FC = () => {
                       <Users className="w-4 h-4 text-blue-400" />
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-white mt-1">
-                      {visitorStats?.totalRegisteredUsers || summary.totalStudents || students.length}
+                      {visitorStats?.totalRegisteredUsers ?? summary.totalStudents ?? students.length}
                     </p>
                     <p className="text-[10px] text-blue-200 mt-0.5">Total Registered Users</p>
                   </div>
@@ -644,7 +733,7 @@ export const AdminModal: React.FC = () => {
                       <Eye className="w-4 h-4 text-emerald-400" />
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-emerald-300 mt-1">
-                      {visitorStats?.liveVisitors || 1}
+                      {visitorStats?.liveVisitors ?? 0}
                     </p>
                     <p className="text-[10px] text-emerald-400/80 mt-0.5">Live Online Right Now</p>
                   </div>
@@ -656,7 +745,7 @@ export const AdminModal: React.FC = () => {
                       <TrendingUp className="w-4 h-4 text-purple-400" />
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-purple-300 mt-1">
-                      {visitorStats?.activeToday || 1}
+                      {visitorStats?.activeToday ?? 0}
                     </p>
                     <p className="text-[10px] text-purple-300/80 mt-0.5">Active Today (Unique Visitors)</p>
                   </div>
@@ -668,7 +757,7 @@ export const AdminModal: React.FC = () => {
                       <BarChart3 className="w-4 h-4 text-amber-400" />
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-amber-300 mt-1">
-                      {visitorStats?.totalPageViews?.toLocaleString() || '1,420+'}
+                      {visitorStats?.totalPageViews?.toLocaleString() ?? '0'}
                     </p>
                     <p className="text-[10px] text-amber-300/80 mt-0.5">Total Page Views Tracked</p>
                   </div>

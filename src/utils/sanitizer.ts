@@ -130,23 +130,18 @@ export function sanitizeUserProfile(profile: Partial<UserProfile> | null | undef
 
 /**
  * Designated Owner & Administrator Accounts
+ * STRICT AUTHORIZATION: ONLY allow nvisit9@gmail.com to access the Admin CMS.
+ * All other accounts (including rishiramthapa30@gmail.com) are completely blocked.
  */
 export const PRIMARY_OWNER_EMAIL = 'nvisit9@gmail.com';
-export const BACKUP_ADMIN_EMAIL = 'ketohero412@gmail.com';
+export const BACKUP_ADMIN_EMAIL = 'nvisit9@gmail.com';
 
 export const OWNER_ADMIN_EMAILS = [
-  'nvisit9@gmail.com',
-  'ketohero412@gmail.com',
-  'banking.nep28@gmail.com'
+  'nvisit9@gmail.com'
 ];
 
 export const AUTHORIZED_ADMIN_EMAILS = [
-  'nvisit9@gmail.com',
-  'ketohero412@gmail.com',
-  'banking.nep28@gmail.com',
-  'rishiramthapa3@gmail.com',
-  'rishiramthapa30@gmail.com',
-  'admin@bankingtayari.np'
+  'nvisit9@gmail.com'
 ];
 export const OFFICIAL_ADMIN_EMAIL = 'nvisit9@gmail.com';
 export const MASTER_ADMIN_PIN = '1234';
@@ -159,24 +154,26 @@ export function isPinValid(inputPin?: string | null): boolean {
 }
 
 /**
- * Strictly restricts the owner analytics dashboard to nvisit9@gmail.com & ketohero412@gmail.com
+ * Hardcoded strict role check: ONLY allows email nvisit9@gmail.com to access the Admin CMS route/modal.
+ * Completely blocks all other accounts.
  */
 export function isOwnerAdmin(email?: string | null): boolean {
   if (!email || typeof email !== 'string') return false;
-  const clean = email.trim().toLowerCase();
-  return OWNER_ADMIN_EMAILS.some(adminEmail => adminEmail.toLowerCase() === clean);
+  return email.trim().toLowerCase() === 'nvisit9@gmail.com';
 }
 
+/**
+ * Strict role check: ONLY allows nvisit9@gmail.com.
+ * For all other accounts (including rishiramthapa30@gmail.com), returns false.
+ */
 export function isUserAdmin(email?: string | null): boolean {
   if (!email || typeof email !== 'string') return false;
-  const clean = email.trim().toLowerCase();
-  return isOwnerAdmin(clean) || AUTHORIZED_ADMIN_EMAILS.some(adminEmail => adminEmail.toLowerCase() === clean);
+  return email.trim().toLowerCase() === 'nvisit9@gmail.com';
 }
 
 /**
  * Checks if an email belongs to admin accounts for activity tracking filtering.
- * Filters out nvisit9@gmail.com, rishiramthapa3@gmail.com, ketohero412@gmail.com,
- * and other designated admin emails from student activity streams.
+ * Filters out nvisit9@gmail.com and admin accounts from student activity streams.
  */
 export function isExcludedAdminActivity(email?: string | null): boolean {
   if (!email || typeof email !== 'string') return false;
@@ -188,7 +185,6 @@ export function isExcludedAdminActivity(email?: string | null): boolean {
     clean === 'rishiramthapa30@gmail.com' ||
     clean === 'ketohero412@gmail.com' ||
     clean === 'admin@bankingtayari.np' ||
-    isUserAdmin(clean) ||
     clean.includes('admin@') ||
     clean.startsWith('admin_')
   );

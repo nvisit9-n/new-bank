@@ -199,11 +199,8 @@ export const Header: React.FC = () => {
     };
   }, []);
 
-  // Visibility logic for the Admin button: ONLY when the authorized admin is logged in
-  const isAdmin = Boolean(
-    (user?.email && isUserAdmin(user.email)) ||
-    (typeof window !== 'undefined' && isUserAdmin(StorageService.getUserProfile()?.email))
-  );
+  // Visibility logic for the Admin button: ONLY when strictly authorized admin (nvisit9@gmail.com) is logged in
+  const isAdmin = Boolean(user?.email && isUserAdmin(user.email));
   const isPro = DbService.isUserPro(user);
 
   const unreadCount = typeof unreadNotificationsCount === 'number' 

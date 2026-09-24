@@ -2655,15 +2655,17 @@ app.get("/api/analytics/stats", (_req, res) => {
     const analyticsDb = readAnalyticsDatabase();
     const today = new Date().toISOString().split("T")[0];
     const todayViews = analyticsDb.dailyStats[today]?.views || 0;
-    const activeTodayCount = Math.max(1, todayUniqueVisitors.size, analyticsDb.dailyStats[today]?.visitors || 1);
+    const activeTodayCount = todayUniqueVisitors.size > 0 
+      ? todayUniqueVisitors.size 
+      : (analyticsDb.dailyStats[today]?.visitors || 0);
 
     return res.json({
       success: true,
       stats: {
-        totalRegisteredUsers: Math.max(totalRegisteredUsers, 28),
-        liveVisitors: Math.max(1, activeSessions.size),
+        totalRegisteredUsers: totalRegisteredUsers,
+        liveVisitors: activeSessions.size,
         activeToday: activeTodayCount,
-        totalPageViews: analyticsDb.totalPageViews,
+        totalPageViews: analyticsDb.totalPageViews || 0,
         todayPageViews: todayViews,
         recentVisits: analyticsDb.recentVisits || [],
         dailyStats: analyticsDb.dailyStats

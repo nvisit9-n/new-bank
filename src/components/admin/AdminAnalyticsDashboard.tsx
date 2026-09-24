@@ -319,6 +319,10 @@ export const AdminAnalyticsDashboard: React.FC = () => {
     }
   };
 
+  if (!isOwnerAdmin(user?.email)) {
+    return null;
+  }
+
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-16">
       

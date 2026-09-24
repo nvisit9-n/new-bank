@@ -605,25 +605,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode; initialUser?: Us
     });
   }, []);
 
-  // Route Guard for /admin or #admin (Strictly owner restricted to nvisit9@gmail.com & ketohero412@gmail.com)
+  // Route Guard for /admin or #admin (Strictly restricted to nvisit9@gmail.com)
   useEffect(() => {
     const enforceAdminRouteGuard = () => {
       const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
       const hash = window.location.hash.toLowerCase();
 
-      const isOwner = Boolean(
-        (user?.email && isOwnerAdmin(user.email)) ||
-        (typeof window !== 'undefined' && isOwnerAdmin(StorageService.getUserProfile()?.email))
-      );
+      const isOwner = Boolean(user?.email && isOwnerAdmin(user.email));
 
       if (path === '/admin' || path.startsWith('/admin/') || hash === '#admin' || hash.startsWith('#admin/')) {
         if (!isOwner) {
           // Immediately redirect unauthorized users to Home (/)
           window.history.replaceState(null, '', '/');
           setActiveTabState('home');
-          addToast('Unauthorized Access: प्रशासक ड्यासबोर्डमा पहुँच केवल आधिकारिक एप ओनरका लागि मात्र उपलब्ध छ।', 'error');
+          addToast('Unauthorized Access: प्रशासक ड्यासबोर्डमा पहुँच केवल आधिकारिक एप ओनर (nvisit9@gmail.com) का लागि मात्र उपलब्ध छ।', 'error');
         } else {
-          // Authorized owner email (nvisit9@gmail.com or ketohero412@gmail.com)
+          // Authorized owner email (nvisit9@gmail.com)
           setActiveTabState('admin');
         }
       } else if (activeTab === 'admin' && !isOwner) {
@@ -642,12 +639,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode; initialUser?: Us
     };
   }, [user?.email, activeTab, addToast]);
 
-  // Open Admin with Security & PIN Check
+  // Open Admin with Security & PIN Check (Strictly locked to nvisit9@gmail.com)
   const openAdminWithSecurityCheck = useCallback(() => {
-    if (!isUserAdmin(user?.email)) {
+    if (!user?.email || !isUserAdmin(user.email)) {
       addToast(`Unauthorized Access: यो सुविधा केवल प्रशासक (${OFFICIAL_ADMIN_EMAIL}) का लागि मात्र हो।`, 'error');
       if (window.location.pathname.includes('/admin')) {
-        window.history.replaceState(null, '', '/dashboard');
+        window.history.replaceState(null, '', '/');
       }
       return;
     }

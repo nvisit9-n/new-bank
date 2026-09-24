@@ -60,11 +60,8 @@ export const Sidebar: React.FC = () => {
     };
   }, []);
 
-  // Check if current user is an owner admin (strictly nvisit9@gmail.com & ketohero412@gmail.com)
-  const isOwner = Boolean(
-    (user?.email && isOwnerAdmin(user.email)) || 
-    (typeof window !== 'undefined' && isOwnerAdmin(StorageService.getUserProfile()?.email))
-  );
+  // Check if current user is the owner admin (strictly nvisit9@gmail.com)
+  const isOwner = Boolean(user?.email && isOwnerAdmin(user.email));
 
   // Expand state for the strict 4-item sequence: ALL categories COLLAPSED (closed) by default
   const [expandedSeq, setExpandedSeq] = useState<Record<string, boolean>>({
