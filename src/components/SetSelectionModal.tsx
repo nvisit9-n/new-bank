@@ -104,10 +104,10 @@ export const SetSelectionModal: React.FC<SetSelectionModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-3.5 sm:p-6 bg-royal-gradient border-b border-blue-400/30 text-white flex items-center justify-between shrink-0 shadow-soft-blue">
+        <div className="p-3.5 sm:p-6 bg-[#0B192C] border-b border-slate-700/80 text-white flex items-center justify-between shrink-0 shadow-lg">
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 text-white">
-              <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-800 border border-slate-700 text-sky-400">
+              <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-sky-400" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
@@ -118,7 +118,7 @@ export const SetSelectionModal: React.FC<SetSelectionModalProps> = ({
                   {isAdmin ? 'Admin Mode • ५० सेट' : '५० सेट • अनलाइन अभ्यास मोड (View-Only)'}
                 </span>
               </div>
-              <p className="text-[11px] sm:text-xs text-blue-100 mt-0.5">
+              <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">
                 तह ४ र तह ५ पाठ्यक्रम: प्रत्येक सेटमा ५० प्रश्न, ४५ मिनेट र नेगेटिभ मार्किङ।
               </p>
             </div>

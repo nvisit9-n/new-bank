@@ -153,7 +153,7 @@ export const CoursesScreen: React.FC = () => {
       </div>
 
       {/* Program Selector Tabs */}
-      <div className="flex flex-wrap p-1.5 bg-slate-200/80 dark:bg-slate-800 rounded-2xl gap-1 max-w-4xl">
+      <div className="flex flex-wrap p-1.5 bg-[#0F172A] rounded-2xl gap-1.5 max-w-4xl border border-slate-800 shadow-md">
         {[
           { id: 'NRB', label: '🏛️ २. बैंकिङ्ग: नेपाल राष्ट्र बैंक (NRB)', count: 'तह ४ र ६ (आधिकारिक पाठ्यक्रम)' },
           { id: 'Commercial', label: '🏦 २. बैंकिङ्ग: वाणिज्य बैंक (RBB/ADBL/NBL)', count: 'तह ४, ५ र ६ साझा' },
@@ -168,30 +168,30 @@ export const CoursesScreen: React.FC = () => {
               onClick={() => handleSelectCourse(tab.id)}
               className={`flex-1 min-w-[170px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all text-center ${
                 isSelected
-                  ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-blue-600 text-white shadow-md ring-1 ring-blue-400/50'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
               }`}
             >
               <div className="leading-snug">{tab.label}</div>
-              <div className="text-[10.5px] font-medium opacity-80 mt-0.5">{tab.count}</div>
+              <div className={`text-[10.5px] font-medium mt-0.5 ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>{tab.count}</div>
             </button>
           );
         })}
       </div>
 
       {/* Course Overview Banner */}
-      <div className="p-6 rounded-3xl bg-royal-gradient text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-blue-400/30 shadow-soft-blue">
-        <div className="space-y-1.5">
+      <div className="p-6 rounded-3xl bg-[#0B192C] text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-slate-700/80 shadow-xl relative overflow-hidden">
+        <div className="space-y-2 relative z-10">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold flex items-center gap-1.5 border border-emerald-500/30">
+            <span className="px-3 py-1 rounded-full bg-emerald-950/80 text-emerald-300 text-xs font-bold flex items-center gap-1.5 border border-emerald-500/50 shadow-xs">
               <Award className="w-3.5 h-3.5 text-emerald-400" />
               आधिकारिक पाठ्यक्रम अनुसार
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-200 text-xs font-semibold">
+            <span className="px-2.5 py-0.5 rounded-full bg-blue-950/80 text-blue-200 text-xs font-semibold border border-blue-500/50">
               २०८१/२०८२ स्वीकृत
             </span>
             {currentCourse.id === 'Commercial' && (
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-200 text-xs font-bold">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-950/80 text-amber-200 text-xs font-bold border border-amber-500/50">
                 RBB • ADBL • NBL साझा
               </span>
             )}
@@ -199,16 +199,16 @@ export const CoursesScreen: React.FC = () => {
           <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
             {currentCourse.name}
           </h2>
-          <p className="text-xs sm:text-sm text-emerald-100/80 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
             {currentCourse.tagline}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-3 shrink-0 relative z-10">
           <button
             id="courses-view-premium-btn"
             onClick={() => setActiveTab('premium')}
-            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition shadow-sm cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-1.5 transition shadow-md cursor-pointer active:scale-95"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>प्रिमियम प्याकहरू हेर्नुहोस्</span>
@@ -218,20 +218,20 @@ export const CoursesScreen: React.FC = () => {
 
       {/* Commercial Banks Highlight Banner (when Commercial Banks selected) */}
       {currentCourse.id === 'Commercial' && (
-        <div className="p-4 rounded-2xl bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 flex items-start gap-3.5 shadow-2xs">
+        <div className="p-4 rounded-2xl bg-[#0F172A] text-white border border-slate-700/80 flex items-start gap-3.5 shadow-md">
           <div className="p-2 rounded-xl bg-blue-600 text-white shrink-0 mt-0.5">
             <Landmark className="w-5 h-5" />
           </div>
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-sm font-black text-blue-900 dark:text-blue-200">
+              <h3 className="text-sm font-black text-white">
                 वाणिज्य बैंकहरू: RBB, ADBL र NBL साझा एकीकृत पाठ्यक्रम (Common Syllabus)
               </h3>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-950/80 text-blue-300 border border-blue-500/40">
                 साझा मोड्युलहरू • Duplicate Content मुक्त
               </span>
             </div>
-            <p className="text-xs text-blue-800/80 dark:text-blue-300/80 leading-relaxed">
+            <p className="text-xs text-slate-300 leading-relaxed">
               राष्ट्रिय वाणिज्य बैंक (RBB), कृषि विकास बैंक (ADBL) र नेपाल बैंक लिमिटेड (NBL) को लागि पाठ्यक्रमका करिब ८०-९०% विषयवस्तुहरू साझा छन्। परीक्षार्थीहरूलाई दोहोरो सामग्री नपरोस् भनी साझा मोड्युलहरूलाई एकीकृत रूपमा प्रस्तुत गरिएको छ।
             </p>
           </div>

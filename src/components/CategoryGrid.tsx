@@ -175,12 +175,12 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
 
       {/* Notification toast if history reset */}
       {notification && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs flex items-center justify-between animate-in fade-in">
+        <div className="p-3 bg-emerald-950/90 border border-emerald-500/50 rounded-xl text-emerald-200 text-xs flex items-center justify-between animate-in fade-in shadow-md">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>{notification}</span>
           </div>
-          <button onClick={() => setNotification(null)} className="text-slate-400 hover:text-white">✕</button>
+          <button onClick={() => setNotification(null)} className="text-slate-300 hover:text-white cursor-pointer">✕</button>
         </div>
       )}
 

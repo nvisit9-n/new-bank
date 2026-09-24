@@ -43,8 +43,43 @@ html, body {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
+/* =========================================================================
+   GLOBAL HIGH-CONTRAST HERO BANNER & BADGE RULES (WCAG AA Compliant)
+   Dark theme styling: #0B192C / #0F172A base, #FFFFFF titles, #CBD5E1 subtitles,
+   and high-contrast badges with dark backdrops.
+   ========================================================================= */
+.bg-royal-gradient {
+  background: linear-gradient(135deg, #0B192C 0%, #0F172A 55%, #1E293B 100%) !important;
+  color: #FFFFFF !important;
+}
+
+.hero-banner-dark {
+  background-color: #0B192C !important;
+  background-image: linear-gradient(135deg, #0B192C 0%, #0F172A 60%, #1E293B 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(51, 65, 85, 0.8) !important;
+}
+
+.badge-emerald-contrast {
+  background-color: rgba(6, 78, 59, 0.6) !important;
+  color: #6EE7B7 !important;
+  border: 1px solid rgba(16, 185, 129, 0.5) !important;
+}
+
+.badge-blue-contrast {
+  background-color: rgba(30, 58, 138, 0.6) !important;
+  color: #93C5FD !important;
+  border: 1px solid rgba(59, 130, 246, 0.5) !important;
+}
+
+.badge-amber-contrast {
+  background-color: rgba(120, 53, 15, 0.6) !important;
+  color: #FDE68A !important;
+  border: 1px solid rgba(245, 158, 11, 0.5) !important;
+}
+
 .shadow-soft-blue {
-  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.10), 0 8px 10px -6px rgba(37, 99, 235, 0.05);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.35), 0 8px 10px -6px rgba(15, 23, 42, 0.25);
 }
 
 /* Custom scrollbars for Clean Utility theme */

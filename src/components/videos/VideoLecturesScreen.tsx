@@ -601,13 +601,13 @@ export const VideoLecturesScreen: React.FC = () => {
           </div>
 
           {/* Social Community Callout Card */}
-          <div className="p-5 rounded-3xl bg-royal-gradient text-white space-y-3.5 shadow-soft-blue border border-blue-400/30">
+          <div className="p-5 rounded-3xl bg-[#0B192C] text-white space-y-3.5 shadow-xl border border-slate-700/80">
             <div className="flex items-center gap-2 text-amber-400">
               <Sparkles className="w-4 h-4" />
               <span className="text-xs font-bold uppercase tracking-wider">नयाँ भिडियो र PDF नोट्स</span>
             </div>
 
-            <p className="text-xs text-blue-100 leading-relaxed">
+            <p className="text-xs text-slate-300 leading-relaxed">
               प्रत्येक नयाँ भिडियो कक्षाको आधिकारिक PDF नोट र अभ्यास प्रश्नपत्र हाम्रा सामाजिक सञ्जाल समूहहरूमा तुरुन्त उपलब्ध हुन्छ।
             </p>
 
@@ -618,7 +618,7 @@ export const VideoLecturesScreen: React.FC = () => {
                   href={ch.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`p-2 rounded-xl bg-white/10 hover:bg-white text-white hover:text-slate-950 transition-all shadow-xs`}
+                  className={`p-2.5 rounded-xl bg-slate-800 hover:bg-white text-slate-200 hover:text-slate-950 border border-slate-700 transition-all shadow-xs`}
                   title={`${ch.name} - ${ch.nepaliName}`}
                 >
                   <SocialBrandIcon id={ch.id} className="w-4 h-4" />

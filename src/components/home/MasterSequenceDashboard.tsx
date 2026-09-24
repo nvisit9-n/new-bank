@@ -280,12 +280,12 @@ export const MasterSequenceDashboard: React.FC = () => {
                   onClick={() => setSelectedBank(bank.id)}
                   className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
                     isActive
-                      ? 'border-sky-500 bg-sky-50/60 dark:bg-sky-950/30 shadow-xs'
+                      ? 'border-sky-500 bg-[#0F172A] text-white shadow-md ring-1 ring-sky-500/40'
                       : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-black ${isActive ? 'text-sky-700 dark:text-sky-300' : 'text-slate-900 dark:text-white'}`}>
+                    <span className={`text-xs font-black ${isActive ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
                       {bank.nameNe}
                     </span>
                     <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${
@@ -294,7 +294,7 @@ export const MasterSequenceDashboard: React.FC = () => {
                       {bank.code}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  <p className={`text-[11px] mt-1 ${isActive ? 'text-slate-300' : 'text-slate-500 dark:text-slate-400'}`}>
                     {bank.desc}
                   </p>
                 </button>
@@ -484,12 +484,12 @@ export const MasterSequenceDashboard: React.FC = () => {
                   onClick={() => setSelectedEnterprise(ent.id)}
                   className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
                     isActive
-                      ? 'border-sky-500 bg-sky-50/60 dark:bg-sky-950/30 shadow-xs'
+                      ? 'border-sky-500 bg-[#0F172A] text-white shadow-md ring-1 ring-sky-500/40'
                       : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-black ${isActive ? 'text-sky-700 dark:text-sky-300' : 'text-slate-900 dark:text-white'}`}>
+                    <span className={`text-xs font-black ${isActive ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
                       {ent.nameNe}
                     </span>
                     <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${
@@ -498,7 +498,7 @@ export const MasterSequenceDashboard: React.FC = () => {
                       {ent.code}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  <p className={`text-[11px] mt-1 ${isActive ? 'text-slate-300' : 'text-slate-500 dark:text-slate-400'}`}>
                     {ent.desc}
                   </p>
                 </button>
@@ -633,12 +633,12 @@ export const MasterSequenceDashboard: React.FC = () => {
                   onClick={() => setSelectedLoksewaRole(role.id)}
                   className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
                     isActive
-                      ? 'border-sky-500 bg-sky-50/60 dark:bg-sky-950/30 shadow-xs'
+                      ? 'border-sky-500 bg-[#0F172A] text-white shadow-md ring-1 ring-sky-500/40'
                       : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs sm:text-sm font-black ${isActive ? 'text-sky-700 dark:text-sky-300' : 'text-slate-900 dark:text-white'}`}>
+                    <span className={`text-xs sm:text-sm font-black ${isActive ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
                       {role.nameNe}
                     </span>
                     <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold ${
@@ -647,7 +647,7 @@ export const MasterSequenceDashboard: React.FC = () => {
                       तह {role.level}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                  <p className={`text-[11px] mt-1 ${isActive ? 'text-slate-300' : 'text-slate-500 dark:text-slate-400'}`}>
                     {role.desc}
                   </p>
                 </button>
