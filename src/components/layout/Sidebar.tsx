@@ -338,7 +338,7 @@ export const Sidebar: React.FC = () => {
     { tab: 'notes-hub', label: 'बैंकिङ्ग नोट्स हब (Notes Hub)', icon: BookOpen, badge: 'NEW', badgeColor: 'bg-amber-500 text-white' },
     { tab: 'tools', label: 'अध्ययन औजारहरू (Tools)', icon: Timer, badge: 'FOCUS', badgeColor: 'bg-purple-600 text-white' },
     { tab: 'flashcards', label: 'स्मार्ट फ्ल्यासकार्ड (Flashcards)', icon: Layers, badge: 'NEW', badgeColor: 'bg-emerald-600 text-white' },
-    { tab: 'deep-research', label: 'Deep Research AI (रिसर्च)', icon: Bot, badge: 'PRO', badgeColor: 'bg-indigo-600 text-white' },
+    { tab: 'deep-research', label: 'AI Sathi (एआई साथी)', icon: Bot, badge: 'PRO', badgeColor: 'bg-indigo-600 text-white' },
     { tab: 'leaderboard', label: 'वरियता (Leaderboard)', icon: Trophy, badge: 'Ranking', badgeColor: 'bg-amber-500 text-white' },
     { tab: 'video-lectures', label: 'भिडियो कक्षाहरू (Videos)', icon: Youtube, badge: 'HD', badgeColor: 'bg-red-600 text-white' },
     { tab: 'free-notes', label: 'अध्ययन / AI नोट्स (Notes)', icon: FileText, badge: 'AI', badgeColor: 'bg-blue-600 text-white' },

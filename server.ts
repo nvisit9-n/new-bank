@@ -1167,28 +1167,47 @@ app.post("/api/ai-assistant", async (req, res) => {
   }
 });
 
-// Lok Sewa & Banking Deep Research AI Engine endpoint
+// Lok Sewa & Banking AI Sathi (एआई साथी) Engine endpoint
 app.post("/api/deep-research", async (req, res) => {
   try {
     const { query, mode = "deep", language = "ne", images = [] } = req.body || {};
 
     let cleanQuery = typeof query === "string" ? query.trim() : "";
-    const uploadedImages: Array<{ mimeType: string; data: string }> = Array.isArray(images) ? images : [];
+    const uploadedFiles: Array<{ mimeType: string; data: string; name?: string; fileType?: string }> = Array.isArray(images) ? images : [];
 
-    if (!cleanQuery && uploadedImages.length === 0) {
-      return res.status(400).json({ error: "Query or images required" });
+    if (!cleanQuery && uploadedFiles.length === 0) {
+      return res.status(400).json({ error: "Query or uploaded files required" });
     }
 
     let systemInstruction = "";
-    if (mode === "deep") {
-      systemInstruction = language === "ne"
-        ? `तपाईँ नेपालको लोकसेवा र बैंकिङ (NRB, RBB, NBL, ADBL) को उच्चस्तरीय Deep Research AI विशेषज्ञ हुनुहुन्छ। उत्तर दिँदा सामान्य गफ नगर्नुहोस्।
-नेपालको संविधान २०७२ का धाराहरू, नेपाल राष्ट्र बैंक ऐन २०५८ का दफाहरू, बैंक तथा वित्तीय संस्था सम्बन्धी ऐन २०७३ (BAFIA) का दफाहरू, सम्पत्ति शुद्धीकरण निवारण ऐन २०६४, कम्पनी ऐन २०६३, सार्वजनिक खरिद ऐन २०६३, र राष्ट्र बैंकका पछिल्ला एकीकृत निर्देशनहरू (Unified Directives १-१५) का विशिष्ट दफा, उपदफा र नीतिगत बुँदाहरू अनिवार्य रूपमा उद्धृत (Cite) गरी गहिरो, प्रमाणिक र प्राज्ञिक अनुसन्धानमूलक विश्लेषण प्रस्तुत गर्नुहोस्।`
-        : `You are an elite Deep Research AI Specialist for Nepal Lok Sewa & Banking exams (NRB, RBB, NBL, ADBL). Provide in-depth, rigorous statutory analysis citing specific Acts (NRB Act 2058, BAFIA 2073, AML/CFT Act 2064, Company Act 2063, Public Procurement Act 2063), Constitutional Articles, Unified Directives 1-15, and latest Monetary Policy clauses.`;
+    if (language === "ne") {
+      systemInstruction = `तपाईँ "AI Sathi (एआई साथी)" - नेपालको लोकसेवा आयोग, बैंकिङ क्षेत्र (नेपाल राष्ट्र बैंक, राष्ट्रिय वाणिज्य बैंक, नेपाल बैंक, कृषि विकास बैंक) तथा सार्वजनिक संस्थानहरू (कर्मचारी सञ्चय कोष, नागरिक लगानी कोष, सामाजिक सुरक्षा कोष, नेपाल विद्युत प्राधिकरण, नेपाल टेलिकम आदि) को आधिकारिक, उच्चस्तरीय विद्वान् AI साथी तथा मुख्य परीक्षक हुनुहुन्छ।
+
+तपाईँ प्रयोगकर्ताले पठाएको प्रश्न, अध्ययन सामग्री वा संलग्न फाइलहरू (तस्बिर, PDF, वा टेक्स्ट कागजात) लाई सूक्ष्म रूपमा पहिचान गरी निम्न ३ प्रमुख वर्ग अनुसार उत्कृष्ट, स्तरीय र परीक्षा-सटीक उत्तर दिनुहुन्छ:
+
+१. यदि यो 'प्रश्न' (Question/Old Question/Model Question) हो भने:
+   - पूर्ण, परीक्षा-केन्द्रित र उच्च अंक प्राप्त हुने उत्कृष्ट ढाँचामा समाधान प्रस्तुत गर्नुहोस्।
+   - सम्बन्धित कानुनी आधार (नेपालको संविधान २०७२, नेपाल राष्ट्र बैंक ऐन २०५८, बाफिया २०७३, सम्पत्ति शुद्धीकरण निवारण ऐन २०६४, कम्पनी ऐन २०६३, सार्वजनिक खरिद ऐन २०६३, र राष्ट्र बैंकका एकीकृत निर्देशनहरू १-१५) का विशिष्ट दफा, उपदफा र नीतिगत बुँदाहरू अनिवार्य रूपमा उद्धृत (Cite) गर्नुहोस्।
+   - विषय प्रवेश, मुख्य विश्लेषण (बुँदागत/चार्ट), र निष्कर्ष सहितको मानक संरचना दिनुहोस्।
+
+२. यदि यो 'नोट्स वा अध्ययन सामग्री' (Study Notes/Syllabus/Content) हो भने:
+   - उक्त सामग्रीको गहन विश्लेषण, सारांश, परीक्षा दृष्टिकोणबाट अति-महत्वपूर्ण बुँदाहरू, सम्भावित परीक्षोपयोगी प्रश्नहरू, र छुटेका कानुनी/तथ्याङ्कीय पक्षहरू औंल्याउनुहोस्।
+
+३. यदि यो 'उत्तरपुस्तिका वा हातेलेखाइ' (Handwritten Answer Sheet) हो भने:
+   - लोकसेवा/बैंकिङको मुख्य परीक्षक (Examiner) को रूपमा सूक्ष्म मूल्याङ्कन गरी:
+     (क) प्राप्त अंक (उदा: ७.५/१० वा १५/२०),
+     (ख) कानुनी/विषयगत शुद्धता र प्रस्तुति स्तर,
+     (ग) मुख्य कमजोरी तथा गल्तीहरू,
+     (घ) परीक्षामा अधिकतम अंक प्राप्त गर्न सुधारका ठोस, व्यावहारिक सुझावहरू दिनुहोस्।
+
+उत्तर दिँदा सामान्य गफ नगर्नुहोस्। प्रमाणिक, प्राज्ञिक, नेपाली भाषामा शुद्ध र स्पष्ट विश्लेषण प्रस्तुत गर्नुहोस्।`;
     } else {
-      systemInstruction = language === "ne"
-        ? "तपाईँ लोकसेवा तथा बैंकिङ परीक्षाको मुख्य परीक्षक (Examiner) हुनुहुन्छ। प्रयोगकर्ताले पठाएका हातेलेखाइ उत्तरपुस्तिकाका पानाहरू राम्ररी अध्ययन गर्नुहोस्। १. प्राप्त अङ्क (उदा: ७.५/१०), २. ऐन/कानुन र विषयवस्तुको प्रयोग, ३. मुख्य गल्तीहरू र ४. सुधारका ठोस सुझावहरू स्पष्ट बुँदामा दिनुहोस्।"
-        : "You are an official Lok Sewa & Banking Exam Examiner. Analyze the uploaded handwritten answer sheet photos thoroughly. Provide: 1. Exact Score (e.g., 7.5/10), 2. Legal/Content accuracy, 3. Major mistakes identified, and 4. Concrete improvement tips.";
+      systemInstruction = `You are "AI Sathi (एआई साथी)" — an elite, authoritative academic and examination mentor for Nepal Lok Sewa, Banking (NRB, RBB, NBL, ADBL), and Public Enterprises exams.
+
+Dynamically identify the nature of user query and uploaded attachments (images, PDF, documents):
+1. If it is a Question: Provide a complete, high-scoring exam answer citing exact constitutional articles, acts (NRB Act 2058, BAFIA 2073, AML/CFT Act 2064, Company Act 2063, Public Procurement Act 2063), NRB Unified Directives 1-15, and structured points with introduction, body, and conclusion.
+2. If it is Study Notes or Syllabus Material: Provide in-depth critical analysis, executive summary, key exam highlights, and identify missing legal provisions and prospective exam questions.
+3. If it is an Answer Sheet / Handwritten paper: Rigorously evaluate like a senior Lok Sewa/Banking examiner — providing: (a) Exact Score (e.g., 7.5/10), (b) Statutory/Thematic Accuracy, (c) Key Shortcomings & Errors, (d) Concrete Steps for Score Maximization.`;
     }
 
     const ai = getGeminiClient();
@@ -1200,19 +1219,38 @@ app.post("/api/deep-research", async (req, res) => {
         contentsParts.push({ 
           text: mode === "eval" 
             ? "कृपया यस हस्तलिखित उत्तरपुस्तिकाको सूक्ष्म मूल्याङ्कन गरी अंक तथा सुधारका सुझाव दिनुहोस्।" 
-            : "कृपया यस विषयको गहिरो कानुनी विश्लेषण गर्नुहोस्।" 
+            : "कृपया संलग्न सामग्री (प्रश्न, नोट्स वा उत्तरपुस्तिका) पहिचान गरी आवश्यक समाधान, विश्लेषण वा मूल्याङ्कन गर्नुहोस्।" 
         });
       }
 
-      uploadedImages.slice(0, 10).forEach(img => {
-        if (img && img.data) {
-          const cleanData = img.data.replace(/^data:[a-zA-Z0-9.+/-]+;base64,/, '').trim();
-          contentsParts.push({
-            inlineData: {
-              mimeType: img.mimeType || 'image/jpeg',
-              data: cleanData
+      uploadedFiles.slice(0, 10).forEach(fileItem => {
+        if (fileItem && fileItem.data) {
+          const rawMime = fileItem.mimeType || 'image/jpeg';
+          const cleanData = fileItem.data.replace(/^data:[a-zA-Z0-9.+/-]+;base64,/, '').trim();
+
+          if (rawMime === 'text/plain') {
+            try {
+              const decodedText = Buffer.from(cleanData, 'base64').toString('utf-8');
+              contentsParts.push({
+                text: `\n\n[संलग्न अध्ययन सामग्री/नोट्स (${fileItem.name || 'Notes.txt'})]:\n${decodedText}\n`
+              });
+            } catch {
+              contentsParts.push({
+                inlineData: {
+                  mimeType: 'text/plain',
+                  data: cleanData
+                }
+              });
             }
-          });
+          } else {
+            // PDF or Image
+            contentsParts.push({
+              inlineData: {
+                mimeType: rawMime.includes('pdf') ? 'application/pdf' : (rawMime.startsWith('image/') ? rawMime : 'image/jpeg'),
+                data: cleanData
+              }
+            });
+          }
         }
       });
 
