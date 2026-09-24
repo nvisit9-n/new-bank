@@ -32,6 +32,7 @@ import {
   NRB_CONSTITUTION_GOVERNANCE_CHAPTER 
 } from './nrbMathItSyllabusChapters';
 import { CURRENT_AFFAIRS_MASTER_DATA } from './currentAffairsData';
+import { BANKING_REVISION_NOTES_SPECIAL_EDITION } from './bankingRevisionNotesData';
 import { 
   ALL_QUIZ_QUESTIONS, 
   convertQuizQuestionToQuestion,
@@ -1075,77 +1076,41 @@ export const MOCK_PREMIUM_NOTES: PremiumNote[] = [
     title: 'Banking Complete Revision Notes (Special Edition)',
     subject: 'Banking',
     category: 'Banking',
-    shortDescription: 'नेपाल बैंक, राष्ट्रिय वाणिज्य बैंक र कृषि विकास बैंकको तह ४ र ५ का लागि सम्पूर्ण पाठ्यक्रम समेटिएको पूर्ण रिभिजन गाइड।',
-    fullDescription: 'यो प्रिमियम गाइड बैंकिङ परीक्षा तयारी गर्ने सम्पूर्ण विद्यार्थीहरूका लागि विशेष रूपमा तयार पारिएको हो। यसमा बैंकिङ कानुनहरू (BAFIA, NRB Act, AML/CFT, Banking Offences), वित्तीय विवरण विश्लेषण, ग्राहक सेवा, कर्जा व्यवस्थापन तथा गत १० वर्षका सम्भावित प्रश्नोत्तरहरू सरल नेपाली भाषामा समावेश छन्।',
+    shortDescription: 'नेपाल राष्ट्र बैंक, राष्ट्रिय वाणिज्य बैंक, नेपाल बैंक र कृषि विकास बैंक (तह ४ र ५) को सम्पूर्ण पाठ्यक्रम समेटिएको गहन रिभिजन गाइड।',
+    fullDescription: 'यो विशेष प्रिमियम गाइड बैंकिङ परीक्षा (NRB, RBB, ADBL, NBL Level 4 & 5) को सम्पूर्ण पाठ्यक्रमलाई समेटेर तयार पारिएको आधिकारिक स्रोत हो। प्रत्येक अध्यायमा: (क) Executive Summary & Syllabus Reference, (ख) ५ र १० अंक ढाँचाका परिभाषाहरू र विस्तृत सिद्धान्त, (ग) तुलनात्मक तालिका (Central vs Commercial, Fund vs Non-Fund, Repo vs Reverse Repo), (घ) BAFIA २०७३, NRB ऐन २०५८, AML ऐन २०६४, र बैंकिङ कसूर ऐन २०६४ का दफाहरू, (ङ) विगत ५ वर्षका प्रश्नोत्तर र मोडल उत्तरहरू, तथा (च) लेखा, वित्तीय अनुपात र गणितीय व्यावहारिक हिसाबहरू समावेश छन्।',
     coverImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80',
     pageCount: 148,
     rating: 4.9,
-    reviewCount: 236,
-    buyersCount: 1420,
+    reviewCount: 348,
+    buyersCount: 1890,
     originalPrice: 299,
     discountPrice: 149,
     isPremium: true,
     author: {
       name: 'सुभाष शर्मा (उप-निर्देशक, वाणिज्य बैंक)',
-      qualification: 'MBA Finance, Loksewa/Banking Topper 2076'
+      qualification: 'MBA Finance, Loksewa & Banking Exam Topper'
     },
-    lastUpdated: '२०८१ भाद्र',
+    lastUpdated: '२०८१ भाद्र (नवीनतम एकीकृत निर्देशन १-१५ सहित)',
     whatYouWillGet: [
-      '✓ सम्पूर्ण पाठ्यक्रम अनुसार तयार पारिएका Exam-oriented Notes',
-      '✓ महत्वपूर्ण परिभाषाहरू र बुँदागत चार्टहरू',
-      '✓ गत ५ वर्षका परीक्षामा सोधिएका प्रश्नोत्तरहरूको संग्रह',
-      '✓ BAFIA २०७३ र NRB ऐन २०५८ को तुलनात्मक विश्लेषणात्मक सारांश',
-      '✓ अभ्यासका लागि ५००+ MCQs र समाधान',
-      '✓ परीक्षा हलमा समय व्यवस्थापन गर्ने टिक्स र ट्रिक्स'
+      '✓ NRB, RBB, ADBL, NBL (Level 4 & 5) को सम्पूर्ण पाठ्यक्रम अनुसार तयार पारिएका Deep-Researched Notes',
+      '✓ ५ र १० अंकका लागि परीक्षा-तयारी मानक परिभाषाहरू र बुँदागत रूपरेखा',
+      '✓ तुलनात्मक विश्लेषण तालिकाहरू (Central vs Commercial, Repo vs Reverse Repo, Cash vs Accrual)',
+      '✓ BAFIA २०७३, NRB ऐन २०५८, AML ऐन २०६४, बैंकिङ कसूर ऐनका सटीक दफागत व्यवस्था',
+      '✓ विगत ५ वर्षका परीक्षा प्रश्नहरू र उच्च-अङ्क प्राप्त हुने मोडल उत्तरहरू',
+      '✓ NPL, CAR, CD Ratio, CRR, SLR र गणितीय हिसाबका चरणबद्ध समाधान'
     ],
-    previewPages: [
-      {
-        pageNumber: 1,
-        title: 'अध्याय १: बैंकिङ विकासक्रम र वर्तमान संरचना',
-        content: 'नेपालमा आधुनिक बैंकिङको विकास वि.सं. १९९४ कार्तिक ३० मा नेपाल बैंक लिमिटेडको स्थापनासँगै भएको हो। यस अध्यायमा कौसी तोषखाना, तेजारथ अड्डादेखि हालको डिजिटल बैंकिङ युगसम्मका सम्पूर्ण कोसेढुङ्गाहरू कालक्रम अनुसार प्रस्तुत गरिएको छ।',
-        notes: ['सम्झनु पर्ने मिति: तेजारथ अड्डा (वि.सं. १९३३), नेपाल बैंक (१९९४), राष्ट्र बैंक (२०१३)।']
-      },
-      {
-        pageNumber: 2,
-        title: 'अध्याय २: बैंक तथा वित्तीय संस्थाको वर्गीकरण मापदण्ड',
-        content: 'BAFIA २०७३ अनुसार न्यूनतम चुक्ता पूँजी, कार्यक्षेत्र र व्यवसायिक प्रकृतिका आधारमा वित्तीय संस्थालाई क, ख, ग, घ वर्गमा विभाजन गरिएको छ। वाणिज्य बैंकहरूको न्यूनतम चुक्ता पूँजी रु. ८ अर्ब तोकिएको छ।',
-        notes: ['पूँजीगत मापदण्ड र कर्जा निक्षेप अनुपात (CD Ratio ९०%) को सीमा।']
-      },
-      {
-        pageNumber: 3,
-        title: 'अध्याय ३: सम्पत्ति शुद्धीकरण (AML) तथा ग्राहक पहिचान (KYC)',
-        content: 'वित्तीय संस्थाहरूले सम्पत्ति शुद्धीकरण निवारण ऐन, २०६४ अनुसार शंकास्पद कारोबार प्रतिवेदन (STR) र सीमा कारोबार प्रतिवेदन (TTR) वित्तीय जानकारी इकाइ (FIU) मा पठाउनु पर्ने कानुनी कर्तव्य रहन्छ।',
-        notes: ['TTR को सीमा रु. १० लाख वा सोभन्दा बढीको नगद कारोबार।']
-      }
-    ],
-    fullDocumentPages: [
-      {
-        pageNumber: 1,
-        title: 'अध्याय १: बैंकिङ विकासक्रम र वर्तमान संरचना',
-        content: 'नेपालमा आधुनिक बैंकिङको विकास वि.सं. १९९४ कार्तिक ३० मा नेपाल बैंक लिमिटेडको स्थापनासँगै भएको हो। यस अध्यायमा कौसी तोषखाना, तेजारथ अड्डादेखि हालको डिजिटल बैंकिङ युगसम्मका सम्पूर्ण कोसेढुङ्गाहरू कालक्रम अनुसार प्रस्तुत गरिएको छ।'
-      },
-      {
-        pageNumber: 2,
-        title: 'अध्याय २: बैंक तथा वित्तीय संस्थाको वर्गीकरण मापदण्ड',
-        content: 'BAFIA २०७३ अनुसार न्यूनतम चुक्ता पूँजी, कार्यक्षेत्र र व्यवसायिक प्रकृतिका आधारमा वित्तीय संस्थालाई क, ख, ग, घ वर्गमा विभाजन गरिएको छ।'
-      },
-      {
-        pageNumber: 3,
-        title: 'अध्याय ३: सम्पत्ति शुद्धीकरण (AML) तथा ग्राहक पहिचान (KYC)',
-        content: 'वित्तीय संस्थाहरूले सम्पत्ति शुद्धीकरण निवारण ऐन, २०६४ अनुसार शंकास्पद कारोबार प्रतिवेदन (STR) र सीमा कारोबार प्रतिवेदन (TTR) वित्तीय जानकारी इकाइ (FIU) मा पठाउनु पर्दछ।'
-      },
-      {
-        pageNumber: 4,
-        title: 'अध्याय ४: नेपाल राष्ट्र बैंकको सुपरिवेक्षकीय भूमिका (Supervisory Framework)',
-        content: 'केन्द्रीय बैंकले वाणिज्य बैंकहरूको जोखिम मूल्याङ्कन गर्न CAMELS फ्रेमवर्क (Capital, Assets, Management, Earnings, Liquidity, Sensitivity) प्रयोग गर्दछ। स्थलगत र गैरस्थलगत निरीक्षणको कानुनी अधिकार ऐनले दिएको छ।'
-      },
-      {
-        pageNumber: 5,
-        title: 'अध्याय ५: कर्जा वर्गीकरण र नोक्सानी व्यवस्था (Loan Loss Provisioning)',
-        content: 'सक्रिय कर्जा (असल र सूक्ष्म निगरानी) तथा निष्कृय कर्जा (कमसल, शंकास्पद र खराब) का आधारमा १.२५% देखि १००% सम्म प्रोभिजनिङ गर्नुपर्ने व्यवस्था छ।'
-      }
-    ],
-    tags: ['Banking', 'Revision', 'RBB', 'NBL', 'ADBL'],
+    previewPages: BANKING_REVISION_NOTES_SPECIAL_EDITION.slice(0, 2).map(ch => ({
+      pageNumber: ch.pageNumber,
+      title: ch.title,
+      content: ch.content,
+      notes: [`पाठ्यक्रम: ${ch.syllabusTags.join(' • ')}`, `अनुमानित अध्ययन समय: ${ch.estimatedReadingTime}`]
+    })),
+    fullDocumentPages: BANKING_REVISION_NOTES_SPECIAL_EDITION.map(ch => ({
+      pageNumber: ch.pageNumber,
+      title: ch.title,
+      content: ch.content
+    })),
+    tags: ['Banking', 'Revision', 'NRB', 'RBB', 'NBL', 'ADBL', 'Special Edition'],
     isPublished: true
   },
   {

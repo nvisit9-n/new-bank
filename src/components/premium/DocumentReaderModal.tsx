@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { 
   X, 
   ChevronLeft, 
@@ -10,14 +10,24 @@ import {
   Bookmark, 
   Share2, 
   FileText, 
-  Download, 
   Check, 
   Layers,
-  ArrowLeft
+  ArrowLeft,
+  Search,
+  BookOpen,
+  Scale,
+  Calculator,
+  HelpCircle,
+  FileCheck2,
+  Clock,
+  Menu,
+  CheckCircle2,
+  ExternalLink
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { PremiumNote } from '../../types';
 import { MarkdownRenderer } from '../common/MarkdownRenderer';
+import { BANKING_REVISION_NOTES_SPECIAL_EDITION, RevisionChapter } from '../../data/bankingRevisionNotesData';
 
 interface DocumentReaderModalProps {
   note: PremiumNote;
@@ -35,6 +45,8 @@ export const DocumentReaderModal: React.FC<DocumentReaderModalProps> = ({
   const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [copied, setCopied] = useState<boolean>(false);
   const [showToc, setShowToc] = useState<boolean>(false);
+  const [searchTopic, setSearchTopic] = useState<string>('');
+  const contentContainerRef = useRef<HTMLDivElement>(null);
 
   const isUserAuthenticated = !!user && !user.isGuest && !!user.email;
 
@@ -83,45 +95,82 @@ export const DocumentReaderModal: React.FC<DocumentReaderModalProps> = ({
 
   const isPurchased = hasPurchased(note.id);
 
-  // Derive document pages safely from fullDocumentPages, previewPages, or samplePages
-  const rawPages: Array<{ pageNumber: number; title: string; content: string; isLocked?: boolean; notes?: string[] }> = 
-    (isPurchased && note.fullDocumentPages && note.fullDocumentPages.length > 0)
-      ? note.fullDocumentPages
-      : (note.previewPages && note.previewPages.length > 0)
-        ? note.previewPages.map((p, idx) => ({ ...p, isLocked: !isPurchased && idx >= 2 }))
-        : (note as any).samplePages && (note as any).samplePages.length > 0
-          ? (note as any).samplePages
-          : [
-              {
-                pageNumber: 1,
-                title: note.title,
-                content: note.fullDescription || note.shortDescription || note.description || 'विस्तृत बैंकिङ तथा लोकसेवा अध्ययन सामग्री।',
-                isLocked: false
-              },
-              {
-                pageNumber: 2,
-                title: 'मुख्य सिकाइ तथा परीक्षा तयारी बुँदाहरू (Key Learning & Exam Points)',
-                content: (note.whatYouWillGet || []).join('\n') || 'नेपालका बैंकिङ तथा वित्तीय संस्थाहरूको परीक्षा पाठ्यक्रममा आधारित विशेष टिपोट।',
-                isLocked: false
-              },
-              {
-                pageNumber: 3,
-                title: 'अध्याय १: विस्तृत विश्लेषणात्मक खण्ड (Comprehensive Analytical Chapter)',
-                content: 'यो खण्ड प्रिमियम प्रयोगकर्ताहरूका लागि मात्र पूर्ण रूपमा उपलब्ध छ। कृपया पूर्ण पहुँचका लागि प्याक अनलक गर्नुहोस्।',
-                isLocked: !isPurchased
-              }
-            ];
+  // If this is the special edition note or has full chapters, resolve to comprehensive chapters
+  const isSpecialEdition = note.id === 'prem-01' || note.title.includes('Banking Complete Revision');
 
-  const totalPages = Math.max(1, rawPages.length);
-  const activePageData = rawPages[currentPage - 1] || rawPages[0];
-  const isPageLocked = !isPurchased && !!activePageData?.isLocked;
+  // Derive chapter list
+  const chaptersList: Array<{
+    pageNumber: number;
+    title: string;
+    subtitle?: string;
+    syllabusTags?: string[];
+    estimatedReadingTime?: string;
+    content: string;
+    isLocked: boolean;
+  }> = useMemo(() => {
+    if (isSpecialEdition) {
+      return BANKING_REVISION_NOTES_SPECIAL_EDITION.map(ch => ({
+        pageNumber: ch.pageNumber,
+        title: ch.title,
+        subtitle: ch.subtitle,
+        syllabusTags: ch.syllabusTags,
+        estimatedReadingTime: ch.estimatedReadingTime,
+        content: ch.content,
+        // Free preview unlocks chapter 1 and 2
+        isLocked: !isPurchased && !ch.isFreePreview
+      }));
+    }
+
+    if (note.fullDocumentPages && note.fullDocumentPages.length > 0) {
+      return note.fullDocumentPages.map((p, idx) => ({
+        pageNumber: p.pageNumber || idx + 1,
+        title: p.title,
+        content: p.content,
+        isLocked: !isPurchased && idx >= 2
+      }));
+    }
+
+    if (note.previewPages && note.previewPages.length > 0) {
+      return note.previewPages.map((p, idx) => ({
+        pageNumber: p.pageNumber || idx + 1,
+        title: p.title,
+        content: p.content,
+        isLocked: !isPurchased && idx >= 2
+      }));
+    }
+
+    return [
+      {
+        pageNumber: 1,
+        title: note.title,
+        content: note.fullDescription || note.shortDescription || note.description || 'विस्तृत बैंकिङ तथा लोकसेवा अध्ययन सामग्री।',
+        isLocked: false
+      }
+    ];
+  }, [isSpecialEdition, isPurchased, note]);
+
+  // Filtered chapters for table of contents search
+  const filteredChapters = useMemo(() => {
+    if (!searchTopic.trim()) return chaptersList;
+    const q = searchTopic.toLowerCase();
+    return chaptersList.filter(ch => 
+      ch.title.toLowerCase().includes(q) ||
+      (ch.subtitle && ch.subtitle.toLowerCase().includes(q)) ||
+      (ch.syllabusTags && ch.syllabusTags.some(t => t.toLowerCase().includes(q))) ||
+      ch.content.toLowerCase().includes(q)
+    );
+  }, [chaptersList, searchTopic]);
+
+  const totalPages = Math.max(1, chaptersList.length);
+  const activePageData = chaptersList[currentPage - 1] || chaptersList[0];
+  const isPageLocked = activePageData?.isLocked;
   const bookmarked = isBookmarked('note', note.id);
 
   const authorDisplayName = typeof note.author === 'string' 
     ? note.author 
-    : (note.author?.name || 'बैंकिङ तयारी विशेषज्ञ');
+    : (note.author?.name || 'सुभाष शर्मा (उप-निर्देशक, वाणिज्य बैंक)');
 
-  const pageCountDisplay = note.pages || note.pageCount || totalPages;
+  const pageCountDisplay = note.pageCount || note.pages || 148;
 
   const handleShare = () => {
     if (navigator.clipboard) {
@@ -131,48 +180,84 @@ export const DocumentReaderModal: React.FC<DocumentReaderModalProps> = ({
     }
   };
 
+  const jumpToPage = (pageNum: number) => {
+    setCurrentPage(pageNum);
+    setShowToc(false);
+    if (contentContainerRef.current) {
+      contentContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Jump to specific in-chapter section
+  const jumpToSection = (sectionPrefix: string) => {
+    if (!contentContainerRef.current) return;
+    const elements = contentContainerRef.current.querySelectorAll('h2, h3');
+    for (let i = 0; i < elements.length; i++) {
+      const el = elements[i];
+      if (el.textContent && el.textContent.includes(sectionPrefix)) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        break;
+      }
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex flex-col justify-between overflow-hidden animate-fadeIn">
+    <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col justify-between overflow-hidden animate-fadeIn">
       
       {/* Top Document Toolbar */}
-      <header className="h-16 px-4 sm:px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-slate-900 dark:text-white shrink-0">
+      <header className="h-16 px-3 sm:px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-slate-900 dark:text-white shrink-0 shadow-sm z-20">
         
-        <div className="flex items-center gap-3 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <button
             onClick={onClose}
             className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            title="पछाडि फर्कनुहोस्"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
 
+          <button
+            onClick={() => setShowToc(!showToc)}
+            className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 ${
+              showToc
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                : 'border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+            }`}
+            title="अध्याय तथा पाठ्यक्रम सूची"
+          >
+            <Layers className="w-4 h-4" />
+            <span className="hidden sm:inline">अध्याय सूची (Index)</span>
+            <span className="sm:hidden">अध्याय</span>
+          </button>
+
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-sm sm:text-base truncate">
+              <span className="font-extrabold text-xs sm:text-base truncate max-w-[180px] sm:max-w-md">
                 {note.title}
               </span>
               {isPurchased ? (
-                <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">
-                  ✓ Full Unlocked
+                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">
+                  <CheckCircle2 className="w-3 h-3" /> Full Unlocked
                 </span>
               ) : (
-                <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-[10px] font-bold">
-                  Free Preview (Sample)
+                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-[10px] font-bold">
+                  <Sparkles className="w-3 h-3" /> Free Preview Mode
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-400">
-              लेखक: {authorDisplayName} • कुल {pageCountDisplay} पृष्ठहरू
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block truncate">
+              {authorDisplayName} • NRB, RBB, ADBL, NBL तह ४ र ५ विशेष रिभिजन
             </p>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           
-          {/* Zoom Controls */}
-          <div className="hidden sm:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-xl text-xs text-slate-600 dark:text-slate-300">
+          {/* Zoom Controls (Desktop) */}
+          <div className="hidden lg:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-xl text-xs text-slate-600 dark:text-slate-300">
             <button 
-              onClick={() => setZoomLevel(prev => Math.max(80, prev - 10))} 
+              onClick={() => setZoomLevel(prev => Math.max(85, prev - 10))} 
               className="p-1 hover:text-emerald-600"
               title="Zoom out"
             >
@@ -180,7 +265,7 @@ export const DocumentReaderModal: React.FC<DocumentReaderModalProps> = ({
             </button>
             <span className="w-10 text-center font-mono font-bold">{zoomLevel}%</span>
             <button 
-              onClick={() => setZoomLevel(prev => Math.min(130, prev + 10))} 
+              onClick={() => setZoomLevel(prev => Math.min(125, prev + 10))} 
               className="p-1 hover:text-emerald-600"
               title="Zoom in"
             >
@@ -196,6 +281,7 @@ export const DocumentReaderModal: React.FC<DocumentReaderModalProps> = ({
                 ? 'bg-amber-500 text-white border-amber-500'
                 : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
+            title="बुकमार्क गर्नुहोस्"
           >
             <Bookmark className={`w-4 h-4 ${bookmarked ? 'fill-white' : ''}`} />
           </button>
@@ -204,6 +290,7 @@ export const DocumentReaderModal: React.FC<DocumentReaderModalProps> = ({
           <button
             onClick={handleShare}
             className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            title="लिङ्क सेयर गर्नुहोस्"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4" />}
           </button>
@@ -212,16 +299,17 @@ export const DocumentReaderModal: React.FC<DocumentReaderModalProps> = ({
           {!isPurchased && (
             <button
               onClick={onOpenPurchase}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 text-xs font-black shadow-sm transition hover:scale-105"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 text-xs font-black shadow-sm transition hover:scale-105 active:scale-95"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Unlock Full (रु. {note.price})</span>
+              <span>अनलाक (रु. {note.discountPrice || note.price || 149})</span>
             </button>
           )}
 
           <button
             onClick={onClose}
             className="p-2 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white"
+            title="बन्द गर्नुहोस्"
           >
             <X className="w-5 h-5" />
           </button>
@@ -229,93 +317,338 @@ export const DocumentReaderModal: React.FC<DocumentReaderModalProps> = ({
 
       </header>
 
-      {/* Document View Canvas */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-8 flex justify-center bg-slate-900/60 relative">
+      {/* Main Workspace with Table of Contents Drawer */}
+      <div className="flex-1 flex overflow-hidden relative">
         
-        {/* Document Page Canvas */}
-        <div 
-          className="w-full max-w-3xl min-h-[700px] bg-white text-slate-900 rounded-2xl shadow-2xl p-6 sm:p-12 relative flex flex-col justify-between transition-all select-none"
-          style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
-        >
-          {/* Official Security Watermark */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5 rotate-[-25deg]">
-            <div className="text-center font-black text-4xl sm:text-6xl text-slate-900 leading-tight">
-              Banking Tayari Nepal<br />
-              {user.name} • {user.email}
+        {/* TOC Sidebar / Drawer */}
+        {showToc && (
+          <aside className="absolute inset-y-0 left-0 z-30 w-80 sm:w-96 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shadow-2xl animate-in slide-in-from-left duration-200">
+            {/* TOC Header */}
+            <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
+              <div>
+                <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <Layers className="w-4 h-4 text-emerald-600" />
+                  <span>पाठ्यक्रम अध्याय सूची (Chapters)</span>
+                </h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  कुल {chaptersList.length} वटा विस्तृत विश्लेषणात्मक मोड्युलहरू
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowToc(false)}
+                className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-          </div>
 
-          {/* Header of Paper */}
-          <div className="border-b-2 border-emerald-600/30 pb-4 flex items-center justify-between">
-            <div>
-              <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">
-                {note.category} • Official Study Notes
-              </span>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900">
-                {note.title}
-              </h1>
-            </div>
-            <div className="text-right">
-              <span className="text-xs font-bold text-slate-500">
-                पृष्ठ: {activePageData ? activePageData.pageNumber : currentPage} / {note.pages}
-              </span>
-            </div>
-          </div>
-
-          {/* Page Body Content */}
-          <div className="py-6 flex-1 relative">
-            {isPageLocked ? (
-              /* Locked Page Overlay */
-              <div className="absolute inset-0 backdrop-blur-md bg-white/80 rounded-xl flex flex-col items-center justify-center p-6 text-center space-y-4">
-                <div className="w-16 h-16 rounded-3xl bg-amber-500/20 text-amber-600 flex items-center justify-center shadow-inner">
-                  <Lock className="w-8 h-8" />
+            {/* Syllabus Topic Search Filter */}
+            <div className="p-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchTopic}
+                  onChange={(e) => setSearchTopic(e.target.value)}
+                  placeholder="शीर्षक खोज्नुहोस् (उदा: BAFIA, CRR, NPL, CAR, Repo)..."
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              {searchTopic && (
+                <div className="flex items-center justify-between mt-1.5 px-1 text-[11px] text-slate-500">
+                  <span>फेला परेका: {filteredChapters.length} अध्याय</span>
+                  <button 
+                    onClick={() => setSearchTopic('')}
+                    className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline"
+                  >
+                    खाली गर्नुहोस्
+                  </button>
                 </div>
+              )}
+            </div>
 
-                <div className="max-w-md space-y-1">
-                  <h3 className="text-xl font-black text-slate-900">
-                    यो पृष्ठ प्रिमियम खरिदकर्ताहरूका लागि मात्र उपलब्ध छ
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-600">
-                    यस पुस्तकका बाँकी {note.pages - 3} वटा सबै पृष्ठहरू, हस्तलिखित सुत्रहरू, चार्टहरू र सम्पूर्ण मोड्युल अध्ययन गर्न प्याक अनलक गर्नुहोस्।
-                  </p>
-                </div>
+            {/* Chapters List */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-2">
+              {filteredChapters.map((ch) => {
+                const isActive = currentPage === ch.pageNumber;
+                return (
+                  <button
+                    key={ch.pageNumber}
+                    onClick={() => jumpToPage(ch.pageNumber)}
+                    className={`w-full text-left p-3 rounded-2xl transition-all border ${
+                      isActive
+                        ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 text-emerald-900 dark:text-emerald-200 shadow-sm'
+                        : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center ${
+                          isActive 
+                            ? 'bg-emerald-600 text-white' 
+                            : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}>
+                          {ch.pageNumber}
+                        </span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                          अध्याय {ch.pageNumber}
+                        </span>
+                      </div>
 
+                      {ch.isLocked ? (
+                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-[10px] font-bold">
+                          <Lock className="w-2.5 h-2.5" /> Locked
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">
+                          <CheckCircle2 className="w-2.5 h-2.5" /> Ready
+                        </span>
+                      )}
+                    </div>
+
+                    <h4 className="font-extrabold text-xs sm:text-sm mt-1.5 leading-snug line-clamp-2">
+                      {ch.title.replace(/^अध्याय \d+:\s*/, '')}
+                    </h4>
+
+                    {ch.subtitle && (
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
+                        {ch.subtitle}
+                      </p>
+                    )}
+
+                    {ch.syllabusTags && ch.syllabusTags.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {ch.syllabusTags.map((tag, tIdx) => (
+                          <span 
+                            key={tIdx}
+                            className="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-semibold text-slate-600 dark:text-slate-400"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* TOC Footer Note */}
+            {!isPurchased && (
+              <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border-t border-amber-200 dark:border-amber-800/50 text-center space-y-1">
+                <span className="text-[11px] font-bold text-amber-900 dark:text-amber-200 block">
+                  अध्याय १ र २ पूर्ण निःशुल्क प्रिभ्यूमा उपलब्ध छन्।
+                </span>
                 <button
                   onClick={onOpenPurchase}
-                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-black text-sm shadow-lg shadow-amber-500/30 transition transform hover:scale-105 flex items-center gap-2"
+                  className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs shadow-sm hover:scale-102 transition"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  <span>रु. {note.price} मा तत्काल पूर्ण प्याक अनलक गर्नुहोस्</span>
+                  सबै ६ अध्याय अनलक गर्नुहोस् (रु. {note.discountPrice || 149})
                 </button>
               </div>
-            ) : (
-              /* Unlocked Content */
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-emerald-800 border-l-4 border-emerald-600 pl-3">
-                  {activePageData?.title || `अध्याय १: सामान्य सिद्धान्त र पृष्ठभूमि`}
-                </h3>
-                <div className="text-sm sm:text-base leading-relaxed text-slate-700">
-                  <MarkdownRenderer content={activePageData?.content || ''} />
+            )}
+          </aside>
+        )}
+
+        {/* Document View Canvas */}
+        <div 
+          ref={contentContainerRef}
+          className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8 flex justify-center bg-slate-900/60 relative scroll-smooth"
+        >
+          {/* Document Page Canvas */}
+          <div 
+            className="w-full max-w-4xl bg-white text-slate-900 rounded-3xl shadow-2xl p-5 sm:p-10 relative flex flex-col justify-between transition-all select-text my-auto"
+            style={{ 
+              transform: `scale(${zoomLevel / 100})`, 
+              transformOrigin: 'top center',
+              minHeight: '850px' 
+            }}
+          >
+            {/* Official Security Watermark */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] rotate-[-25deg]">
+              <div className="text-center font-black text-4xl sm:text-7xl text-slate-900 leading-tight">
+                Banking Tayari Nepal<br />
+                {user.name} • {user.email}
+              </div>
+            </div>
+
+            {/* Header of Document Paper */}
+            <div className="border-b-2 border-emerald-600/30 pb-4 mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-wider">
+                      NRB • RBB • ADBL • NBL Level 4 & 5
+                    </span>
+                    <span className="text-xs font-semibold text-slate-500">
+                      Special Edition Revision Manual
+                    </span>
+                  </div>
+                  <h1 className="text-lg sm:text-2xl font-black text-slate-900 mt-1">
+                    {activePageData?.title || note.title}
+                  </h1>
+                  {activePageData?.subtitle && (
+                    <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
+                      {activePageData.subtitle}
+                    </p>
+                  )}
                 </div>
 
-                {/* Decorative handwritten formula box simulation */}
-                <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-200 text-xs sm:text-sm text-amber-900 font-sans space-y-1">
-                  <span className="font-bold flex items-center gap-1 text-amber-800">
-                    📌 लोकसेवा तथा बैंकिङ परीक्षा मुख्य टिप्स:
+                <div className="flex items-center sm:flex-col items-end justify-between sm:justify-center border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100">
+                  <span className="text-xs font-extrabold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">
+                    अध्याय {currentPage} / {totalPages}
                   </span>
-                  <p>
-                    मौद्रिक उपकरण तथा नियामकीय अनुपातहरू (CRR: 4%, SLR: 12% for Commercial Banks) सम्बन्धी तथ्यहरूलाई बुँदागत रूपमा परीक्षा पुस्तिकामा उल्लेख गर्दा थप नम्बर प्राप्त हुन्छ।
-                  </p>
+                  {activePageData?.estimatedReadingTime && (
+                    <span className="text-[11px] text-slate-500 flex items-center gap-1 mt-1">
+                      <Clock className="w-3 h-3 text-slate-400" />
+                      {activePageData.estimatedReadingTime}
+                    </span>
+                  )}
                 </div>
               </div>
-            )}
-          </div>
 
-          {/* Footer of Paper */}
-          <div className="border-t border-slate-200 pt-3 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Banking Tayari Nepal Publication</span>
-            <span>पृष्ठ {activePageData ? activePageData.pageNumber : currentPage}</span>
-            <span>All Rights Reserved</span>
+              {/* In-Chapter Section Jump Nav Pills (Only if unlocked) */}
+              {!isPageLocked && isSpecialEdition && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pt-3 pb-1 scrollbar-none text-[11px]">
+                  <span className="font-bold text-slate-500 shrink-0">द्रुत नेभिगेसन:</span>
+                  <button 
+                    onClick={() => jumpToSection('खण्ड (क)')}
+                    className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 font-semibold transition shrink-0"
+                  >
+                    📋 सारांश (Syllabus)
+                  </button>
+                  <button 
+                    onClick={() => jumpToSection('खण्ड (ख)')}
+                    className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 font-semibold transition shrink-0"
+                  >
+                    📖 सिद्धान्त (5/10 Marks)
+                  </button>
+                  <button 
+                    onClick={() => jumpToSection('खण्ड (ग)')}
+                    className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 font-semibold transition shrink-0"
+                  >
+                    ⚖️ तुलनात्मक तालिका
+                  </button>
+                  <button 
+                    onClick={() => jumpToSection('खण्ड (घ)')}
+                    className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 font-semibold transition shrink-0"
+                  >
+                    📜 ऐन तथा दफाहरू
+                  </button>
+                  <button 
+                    onClick={() => jumpToSection('खण्ड (ङ)')}
+                    className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 font-semibold transition shrink-0"
+                  >
+                    ✍️ विगत ५ वर्षका प्रश्नोत्तर
+                  </button>
+                  <button 
+                    onClick={() => jumpToSection('खण्ड (च)')}
+                    className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 font-semibold transition shrink-0"
+                  >
+                    🧮 सुत्र तथा हिसाबहरू
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Page Body Content */}
+            <div className="py-2 flex-1 relative">
+              {isPageLocked ? (
+                /* Locked Page Overlay for Preview Mode */
+                <div className="my-10 p-6 sm:p-10 rounded-3xl bg-slate-50 border-2 border-dashed border-amber-300 text-center space-y-5">
+                  <div className="w-16 h-16 rounded-3xl bg-amber-500/20 text-amber-600 flex items-center justify-center mx-auto shadow-inner">
+                    <Lock className="w-8 h-8" />
+                  </div>
+
+                  <div className="max-w-lg mx-auto space-y-2">
+                    <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">
+                      प्रिमियम अध्ययन सामग्री (अध्याय {currentPage})
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-black text-slate-900">
+                      {activePageData?.title || 'यो अध्याय प्रिमियम प्रयोगकर्ताका लागि मात्र उपलब्ध छ'}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                      यस अध्यायमा परीक्षा-तयारी ५ र १० अंकका विस्तृत परिभाषाहरू, तुलनात्मक तालिकाहरू, BAFIA तथा NRB ऐनका सटीक दफाहरू, विगत ५ वर्षका प्रश्नोत्तर र गणितीय हिसाबहरू समावेश छन्।
+                    </p>
+                  </div>
+
+                  {/* Highlights of this locked chapter */}
+                  {activePageData?.subtitle && (
+                    <div className="p-4 rounded-2xl bg-white border border-slate-200 max-w-md mx-auto text-left text-xs space-y-1 text-slate-700">
+                      <span className="font-bold text-emerald-800 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" /> यस अध्यायमा के-के पढ्न पाइन्छ:
+                      </span>
+                      <p className="text-slate-600 pl-5">
+                        {activePageData.subtitle}
+                      </p>
+                      <div className="flex flex-wrap gap-1 pt-1 pl-5">
+                        {(activePageData.syllabusTags || []).map((t, idx) => (
+                          <span key={idx} className="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-semibold text-slate-600">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-2">
+                    <button
+                      onClick={onOpenPurchase}
+                      className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-black text-sm shadow-xl shadow-amber-500/25 transition transform hover:scale-105 active:scale-95 inline-flex items-center gap-2"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span>रु. {note.discountPrice || note.price || 149} मा पूर्ण प्याक अनलक गर्नुहोस् (Lifetime Access)</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Full Unlocked Content Rendering */
+                <div className="space-y-6">
+                  {/* Free preview notification pill */}
+                  {!isPurchased && (
+                    <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 font-medium">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>तपाईं अहिले निःशुल्क नमुना पृष्ठ (Free Sample Chapter) अध्ययन गर्दै हुनुहुन्छ।</span>
+                      </div>
+                      <button
+                        onClick={onOpenPurchase}
+                        className="px-3 py-1 rounded-xl bg-emerald-600 text-white font-bold text-[11px] hover:bg-emerald-700 transition shrink-0"
+                      >
+                        पूर्ण ६ अध्याय किन्नुहोस् (रु. १४९)
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed select-text">
+                    <MarkdownRenderer content={activePageData?.content || ''} />
+                  </div>
+
+                  {/* Loksewa & Banking Exam Tip Box */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs sm:text-sm text-amber-950 space-y-1.5 shadow-sm mt-8">
+                    <span className="font-black flex items-center gap-1.5 text-amber-900">
+                      📌 लोकसेवा तथा बैंकिङ परीक्षा मुख्य सुझाव (Expert Exam Strategy):
+                    </span>
+                    <p className="leading-relaxed">
+                      उत्तर लेख्दा अनिवार्य रूपमा कानुनी दफा (जस्तै: BAFIA २०७३ को दफा ४९ वा NRB ऐनको दफा ४), तुलनात्मक तालिका र अनुपातहरू (CRR: ४%, SLR: १२%, CAR: ११%) समावेश गर्नाले परीक्षकबाट उच्च प्राप्ताङ्क सुनिश्चित हुन्छ।
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer of Document Paper */}
+            <div className="border-t border-slate-200 pt-4 mt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+              <span className="font-semibold">Banking Tayari Nepal Official Publication</span>
+              <div className="flex items-center gap-3">
+                <span className="font-mono font-bold text-slate-700">
+                  पृष्ठ {currentPage} / {totalPages}
+                </span>
+                <span>•</span>
+                <span>All Rights Reserved</span>
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -323,35 +656,43 @@ export const DocumentReaderModal: React.FC<DocumentReaderModalProps> = ({
       </div>
 
       {/* Bottom Paging Controller */}
-      <footer className="h-16 px-4 sm:px-8 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+      <footer className="h-16 px-4 sm:px-8 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0 z-20 shadow-md">
+        
         <button
-          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+          onClick={() => jumpToPage(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
-          className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1"
+          className="px-3 sm:px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 active:scale-95"
         >
           <ChevronLeft className="w-4 h-4" />
-          <span>अघिल्लो पृष्ठ</span>
+          <span className="hidden sm:inline">अघिल्लो अध्याय (Previous)</span>
+          <span className="sm:hidden">अघिल्लो</span>
         </button>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-            Page {currentPage} of {totalPages}
-          </span>
+          <button 
+            onClick={() => setShowToc(!showToc)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 transition"
+          >
+            <Layers className="w-3.5 h-3.5 text-emerald-600" />
+            <span>अध्याय {currentPage} / {totalPages}</span>
+          </button>
           {!isPurchased && (
-            <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold hidden sm:inline">
-              (Free Sample Pages)
+            <span className="text-[11px] text-amber-600 dark:text-amber-400 font-bold hidden md:inline">
+              (निःशुल्क नमुना पृष्ठहरू)
             </span>
           )}
         </div>
 
         <button
-          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+          onClick={() => jumpToPage(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1"
+          className="px-3 sm:px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 active:scale-95"
         >
-          <span>पछिल्लो पृष्ठ</span>
+          <span className="hidden sm:inline">अर्को अध्याय (Next)</span>
+          <span className="sm:hidden">अर्को</span>
           <ChevronRight className="w-4 h-4" />
         </button>
+
       </footer>
 
     </div>
