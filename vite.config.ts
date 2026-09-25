@@ -56,6 +56,7 @@ export default defineConfig(() => {
         workbox: {
           maximumFileSizeToCacheInBytes: 25 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,json,pdf}'],
+          globIgnores: ['**/BANKING_TAYARI_NEPAL_COMPLETE_UI_AUDIT.pdf'],
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api/],
           runtimeCaching: [
