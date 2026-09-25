@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HomeTopProfileHeader } from './HomeTopProfileHeader';
 import { HomeOverallProgressBar } from './HomeOverallProgressBar';
+import { DailyChallengeSection } from './DailyChallengeSection';
 import { HomeTargetExamCards } from './HomeTargetExamCards';
 import { HomeQuickAccessGrid } from './HomeQuickAccessGrid';
 import { CategoryExamsListPage } from './CategoryExamsListPage';
@@ -207,7 +208,10 @@ export const HomeScreen: React.FC = () => {
       {/* 2. High-level Overall Progress Bar (Circular/Horizontal summary) */}
       <HomeOverallProgressBar />
 
-      {/* 3. Target Exam Selection Cards (3 Core Categories Matching Sidebar Navigation) */}
+      {/* 3. Daily Challenge Section (25 Randomized MCQs: Banking Fundamentals / Current Events / Mixed) */}
+      <DailyChallengeSection />
+
+      {/* 4. Target Exam Selection Cards (3 Core Categories Matching Sidebar Navigation) */}
       <HomeTargetExamCards onSelectCategory={handleSelectCategory} />
 
       {/* 4. Quick-Access Module Grid (Syllabus, Videos, Notes Hub, Quizzes, Tools, Portal) */}
