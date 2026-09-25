@@ -37,12 +37,13 @@ import { isOwnerAdmin, PRIMARY_OWNER_EMAIL, BACKUP_ADMIN_EMAIL, isExcludedAdminA
 import { UserDetailModal } from './UserDetailModal';
 import { PdfExportDialog } from '../modals/PdfExportDialog';
 import { DbService } from '../../services/dbService';
+import { AdminContentCms } from './AdminContentCms';
 
 export const AdminAnalyticsDashboard: React.FC = () => {
   const { user, setActiveTab, addToast } = useApp();
 
   // Active sub-view in Admin Analytics
-  const [activeSubTab, setActiveSubTab] = useState<'exams' | 'users' | 'notes'>('exams');
+  const [activeSubTab, setActiveSubTab] = useState<'exams' | 'users' | 'notes' | 'cms'>('exams');
 
   // Selected User for Detail View Timeline Modal
   const [selectedUserForDetail, setSelectedUserForDetail] = useState<AdminRegisteredUser | null>(null);
@@ -560,7 +561,20 @@ export const AdminAnalyticsDashboard: React.FC = () => {
                 }`}
               >
                 <FileText className="w-4 h-4" />
-                <span>३. सामग्री तथा नोट्स अध्ययन ({notesActivities.length})</span>
+                <span>३. सामग्री तथा नोट्स ({notesActivities.length})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveSubTab('cms')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer shrink-0 ${
+                  activeSubTab === 'cms'
+                    ? 'bg-slate-900 text-white dark:bg-amber-600 dark:text-white shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/80 dark:hover:bg-slate-800'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>४. पाठ्यक्रम, स्रोत र प्रकाशन CMS</span>
               </button>
             </div>
 
@@ -1057,6 +1071,15 @@ export const AdminAnalyticsDashboard: React.FC = () => {
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {/* =========================================================================
+              VIEW 4: SYLLABUS, SOURCE & CONTENT CMS
+              ========================================================================= */}
+          {activeSubTab === 'cms' && (
+            <div className="p-4 sm:p-5">
+              <AdminContentCms />
             </div>
           )}
 

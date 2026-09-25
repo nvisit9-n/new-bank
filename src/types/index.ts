@@ -16,7 +16,13 @@ export type NavigationTab =
   | 'deep-research'
   | 'about'
   | 'admin'
-  | 'tools';
+  | 'tools'
+  | 'master-books'
+  | 'my-exam'
+  | 'question-bank'
+  | 'ai-tutor';
+
+export * from './masterEcosystem';
 
 export type FlashcardCategory = 'legal' | 'banking' | 'economics' | 'risk_aml';
 

@@ -16,6 +16,39 @@ export const HomeQuickAccessGrid: React.FC = () => {
 
   const modules = [
     {
+      id: 'master-books',
+      titleNe: 'मास्टर बुक्स (Master Books)',
+      subtitleNe: '३०-बुँदे प्राज्ञिक पाठ्यपुस्तक र मोडेल उत्तर',
+      icon: BookOpen,
+      color: 'text-indigo-600 dark:text-indigo-400',
+      bgColor: 'bg-indigo-50 dark:bg-indigo-950/40',
+      borderColor: 'border-indigo-100 dark:border-indigo-900/50',
+      badge: '३०-बुँदे',
+      onClick: () => setActiveTab('master-books')
+    },
+    {
+      id: 'my-exam',
+      titleNe: 'मेरो परीक्षा योजना (My Exam Plan)',
+      subtitleNe: 'दैनिक अध्ययन तालिका र पाठ्यक्रम ट्र्याकर',
+      icon: Timer,
+      color: 'text-orange-600 dark:text-orange-400',
+      bgColor: 'bg-orange-50 dark:bg-orange-950/40',
+      borderColor: 'border-orange-100 dark:border-orange-900/50',
+      badge: 'रणनीति',
+      onClick: () => setActiveTab('my-exam')
+    },
+    {
+      id: 'question-bank',
+      titleNe: 'मास्टर प्रश्न बैंक (Question Bank)',
+      subtitleNe: 'विगतका प्रश्न र १५-प्रारूप समाधान',
+      icon: Award,
+      color: 'text-sky-600 dark:text-sky-400',
+      bgColor: 'bg-sky-50 dark:bg-sky-950/40',
+      borderColor: 'border-sky-100 dark:border-sky-900/50',
+      badge: '१५-प्रारूप',
+      onClick: () => setActiveTab('question-bank')
+    },
+    {
       id: 'courses',
       titleNe: 'पाठ्यक्रम (Syllabus)',
       subtitleNe: 'आधिकारिक सिलेबस र अङ्कभार',

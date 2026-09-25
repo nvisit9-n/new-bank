@@ -23,6 +23,10 @@ import { FlashcardsScreen } from '../flashcards/FlashcardsScreen';
 import { IntegratedHybridPortal } from '../portal/IntegratedHybridPortal';
 import { BankingStudyNotesHub } from '../notes/BankingStudyNotesHub';
 import { ToolsScreen } from '../tools/ToolsScreen';
+import { MasterBooksScreen } from '../master-books/MasterBooksScreen';
+import { MyExamStudyPlan } from '../my-exam/MyExamStudyPlan';
+import { MasterQuestionBankScreen } from '../question-bank/MasterQuestionBankScreen';
+import { AcademicAiTutor } from '../ai-tutor/AcademicAiTutor';
 import { Footer } from './Footer';
 
 // Readers & Modals
@@ -85,6 +89,10 @@ export const AppLayout: React.FC<AppLayoutProps> = () => {
 
         <main className={`flex-1 ${activeTab === 'admin' ? 'p-0 w-full' : 'p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto'} pb-32 sm:pb-24 md:pb-12`}>
           {activeTab === 'home' && <HomeScreen />}
+          {activeTab === 'master-books' && <MasterBooksScreen />}
+          {activeTab === 'my-exam' && <MyExamStudyPlan />}
+          {activeTab === 'question-bank' && <MasterQuestionBankScreen />}
+          {activeTab === 'ai-tutor' && <AcademicAiTutor />}
           {activeTab === 'portal' && <IntegratedHybridPortal />}
           {activeTab === 'courses' && <CoursesScreen />}
           {activeTab === 'quiz' && <PublicEnterprisesScreen />}

@@ -331,8 +331,12 @@ export const Sidebar: React.FC = () => {
   ];
 
   const resourceNavItems: { tab: NavigationTab; label: string; icon: React.ComponentType<{ className?: string }>; badge?: string | number; badgeColor?: string }[] = [
+    { tab: 'master-books', label: 'मास्टर बुक्स (Master Books)', icon: BookOpen, badge: '३०-बुँदे', badgeColor: 'bg-emerald-600 text-white' },
+    { tab: 'my-exam', label: 'मेरो परीक्षा योजना (My Exam)', icon: Flame, badge: 'PLAN', badgeColor: 'bg-orange-600 text-white' },
+    { tab: 'question-bank', label: 'मास्टर प्रश्न बैंक (Question Bank)', icon: Trophy, badge: '१५-प्रारूप', badgeColor: 'bg-sky-600 text-white' },
+    { tab: 'ai-tutor', label: 'प्राज्ञिक शिक्षक (AI Tutor)', icon: Bot, badge: 'PRO', badgeColor: 'bg-indigo-600 text-white' },
     { tab: 'portal', label: 'एकीकृत पोर्टल (NRB/RBB/NBL)', icon: Landmark, badge: 'LIVE', badgeColor: 'bg-rose-600 text-white' },
-    { tab: 'notes-hub', label: 'बैंकिङ्ग नोट्स हब (Notes Hub)', icon: BookOpen, badge: 'NEW', badgeColor: 'bg-amber-500 text-white' },
+    { tab: 'notes-hub', label: 'बैंकिङ्ग नोट्स हब (Notes Hub)', icon: FileText, badge: 'NEW', badgeColor: 'bg-amber-500 text-white' },
     { tab: 'tools', label: 'अध्ययन औजारहरू (Tools)', icon: Timer, badge: 'FOCUS', badgeColor: 'bg-purple-600 text-white' },
     { tab: 'flashcards', label: 'स्मार्ट फ्ल्यासकार्ड (Flashcards)', icon: Layers, badge: 'NEW', badgeColor: 'bg-emerald-600 text-white' },
     { tab: 'deep-research', label: 'AI Sathi (एआई साथी)', icon: Bot, badge: 'PRO', badgeColor: 'bg-indigo-600 text-white' },
